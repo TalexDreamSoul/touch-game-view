@@ -23,13 +23,14 @@ useHead({
   ],
 })
 
-const user = localStorage.getItem("user")
+let user = localStorage.getItem("user")
 const name = ref(user || "")
 
 // @ts-ignore
 window.$name = name
 
 function go() {
+  user = name.value
   localStorage.setItem("user", name.value)
 }
 </script>

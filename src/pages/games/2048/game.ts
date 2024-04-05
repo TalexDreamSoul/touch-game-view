@@ -298,11 +298,11 @@ export class Game2048 {
   }
 
   listen(_callback: Function) {
-    const callback = () => {
+    const callback = (res: any) => {
       localStorage.setItem('__map', JSON.stringify(this.map))
       localStorage.setItem('__state', JSON.stringify(this.state))
 
-      _callback()
+      _callback(res)
     }
 
     this.listenTouch(callback)

@@ -75,6 +75,8 @@ function getStatus() {
 }
 
 function postScore() {
+  if (historyHighest.value > score.value) return
+
   // 上传用户数据
   // 格式: post { user: "", score: 0 }
   fetch(`${baseUrl}/games/2048/score/${user.value}/${score.value}`, {
@@ -116,7 +118,6 @@ function reconnect() {
 
 getStatus()
 getRankings()
-postScore()
 </script>
 
 <template>
@@ -178,7 +179,7 @@ postScore()
   left: 50%;
   bottom: 10%;
 
-  width: 24rem;
+  width: 85%;
   /* height: 4rem; */
 
   background-color: #e6e6e680;
@@ -280,6 +281,8 @@ postScore()
 
   background-size: cover;
   background-image: url("./bg.png");
+
+  overflow: hidden;
 }
 
 .Game-Bar-Title {
@@ -332,6 +335,8 @@ postScore()
   /* background-color: #e6e6e6; */
   transform: translate(-50%, -50%);
   z-index: 100;
+
+  overflow: hidden;
 }
 
 .GameWrapper {
@@ -341,13 +346,15 @@ postScore()
   top: 50%;
   left: 50%;
 
-  width: 24rem;
-  height: 24rem;
+  width: 20rem;
+  height: 20rem;
 
   border-radius: 8px;
   background-color: #e6e6e680;
   backdrop-filter: blur(18px) saturate(180%);
   transform: translate(-50%, -50%);
+
+  overflow: hidden;
 }
 </style>
 

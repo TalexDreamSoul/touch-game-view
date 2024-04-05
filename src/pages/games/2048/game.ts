@@ -87,6 +87,13 @@ export class Game2048 {
   }
 
   start() {
+    Object.assign(this.map, [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ])
+
     // 随机抽取两个格子赋值为 2
     var { x, y } = this._randomSlot();
     this.map[x][y] = 2;

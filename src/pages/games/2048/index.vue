@@ -23,7 +23,8 @@ watchEffect(() => {
     score.value = game.state.score
     status.value = game.state.status
   })
-  game.start()
+
+  setTimeout(() => game.start(), 200)
 })
 
 function restart() {
@@ -35,7 +36,7 @@ function restart() {
   <div class="Game">
     <div class="Game-end" :class="{ show: status === 'end' }">
       <p>游戏结束</p>
-      <button @click="restart">重新开始</button>
+      <button @touchstart="restart" @click="restart">重新开始</button>
     </div>
     <div class="Game-Bar">
       <div class="Game-Bar-Title">2048

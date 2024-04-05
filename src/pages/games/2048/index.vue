@@ -176,7 +176,7 @@ postScore()
   align-items: center;
 
   left: 50%;
-  bottom: 15%;
+  bottom: 10%;
 
   width: 24rem;
   /* height: 4rem; */
@@ -323,7 +323,7 @@ postScore()
   align-items: center;
 
   left: 50%;
-  top: 20%;
+  top: 10%;
 
   width: 24rem;
   height: 4rem;

@@ -19,10 +19,16 @@ const game = new Game2048()
 const user = window.$name
 
 const historyHighest = computed(() => {
-  const _user = [...rankings.value].filter(res => res.user === user.savedName)
+  const _user = [...rankings.value].filter(res => res.user === user.value)
   if (_user.length !== 1) return score.value
 
   return Math.max(score.value, _user[0].score)
+})
+
+const topIndex = computed(() => {
+  const _ind = [...rankings.value].findIndex(res => res.user === user.value)
+
+  return _ind + 1 || 999
 })
 
 watchEffect(() => {
@@ -131,7 +137,7 @@ getRankings()
       </div>
       <div class="Game-Bar-Line">
         游戏排行
-        <span class="game-score">0</span>
+        <span class="game-score">{{ topIndex || 0 }}</span>
       </div>
       <div class="Game-Bar-Line">
         历史最高

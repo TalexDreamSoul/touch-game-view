@@ -44,6 +44,10 @@ watchEffect(() => {
       if (status.value === 'end') {
         postScore()
 
+        // 清空缓存
+        localStorage.removeItem('__map');
+        localStorage.removeItem('__state');
+
         console.log('数据上传完毕！')
       }
     }, 500)

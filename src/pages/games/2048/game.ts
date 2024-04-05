@@ -193,6 +193,9 @@ export class Game2048 {
       }
     }
 
+    // 如果没有 tracks 就代表着没有方块移动 不生成方块
+    if (!tracks.length) return null
+
     // 随机一个地方生成
     let obj = this._randomSlot()
     let amo = 0

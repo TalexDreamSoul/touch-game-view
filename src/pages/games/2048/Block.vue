@@ -30,14 +30,13 @@ watchEffect(() => {
     el.style.left = `${(from[0]!) * 25 + 1}%`
     el.style.top = `${(from[1]!) * 25 + 1}%`
 
-    el.style.transform = 'scale(0.95)'
+    el.style.transform = 'scale(0.8)'
 
     setTimeout(() => {
       el.style.transform = 'scale(1)'
     }, 100)
 
     setTimeout(() => {
-      console.log("move")
 
       el.style.transition = '.125s'
       el.style.left = `${(to[0]!) * 25 + 1}%`
@@ -79,10 +78,10 @@ colors[128] = '#2c3e50'
 
 <template>
   <div ref="dom" class="Block" :class="`Block-${val}`">
-    {{ val }}
-    <span class="pos">
+    {{ val || '' }}
+    <!-- <span class="pos">
       {{ x }}{{ y }}
-    </span>
+    </span> -->
   </div>
 </template>
 

@@ -2,7 +2,7 @@ import { reactive } from 'vue'
 
 export type Direction = "up" | "down" | "left" | "right"
 
-export type Status = "start" | "running" | "pause" | "end"
+export type Status = "start" | "pending" | "end"
 
 export interface Track {
   from: [number, number]
@@ -33,11 +33,11 @@ export class Game2048 {
       [0, 0, 0, 0],
     ])
     this.state = reactive({
-      status: "end",
+      status: "pending",
       score: 0,
     })
 
-    console.log("Game 2048");
+    // console.log("Game 2048");
   }
 
   _randomSlot() {
@@ -93,6 +93,8 @@ export class Game2048 {
 
     var { x, y } = this._randomSlot();
     this.map[x][y] = 2;
+
+    this.state.status = 'start'
   }
 
   move(direction: Direction) {
@@ -230,6 +232,13 @@ export class Game2048 {
       startx = e.touches[0].pageX;
       starty = e.touches[0].pageY;
     }, false);
+
+    // document.body.addEventListener('touchmove', function (e) {
+
+    //   e.preventDefault(); //阻止默认的处理方式(阻止下拉滑动的效果)
+
+    // }, { passive: false })
+
     //手指离开屏幕
     document.addEventListener("touchend", (e) => {
       var endx, endy;
@@ -241,7 +250,8 @@ export class Game2048 {
 
       switch (direction) {
         case 0:
-          alert("未滑动！");
+          e.preventDefault();
+          // alert("未滑动！");
           break;
         case 1:
           res = this.move('up')

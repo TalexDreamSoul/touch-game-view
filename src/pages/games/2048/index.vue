@@ -8,7 +8,7 @@ defineOptions({
 })
 
 const score = ref(0)
-const status = ref("")
+const status = ref("pending")
 const arr = ref<any>([])
 const tracks = ref<any>([])
 const game = new Game2048()
@@ -25,10 +25,18 @@ watchEffect(() => {
   })
   game.start()
 })
+
+function restart() {
+  game.start()
+}
 </script>
 
 <template>
   <div class="Game">
+    <div class="Game-end" :class="{ show: status === 'end' }">
+      <p>游戏结束</p>
+      <button @click="restart">重新开始</button>
+    </div>
     <div class="Game-Bar">
       <div class="Game-Bar-Title">2048
       </div>
@@ -55,6 +63,50 @@ watchEffect(() => {
 </template>
 
 <style>
+.Game-end {
+  z-index: 1001;
+  position: absolute;
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1.2);
+  transition: .25s;
+
+  background-color: #00000050;
+
+}
+
+.Game-end.show {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.Game-end button {
+  padding: .5rem;
+
+  cursor: pointer;
+  border-radius: 8px;
+  background-color: #ffffff80;
+}
+
+.Game-end p {
+  font-size: 1.5rem;
+  font-weight: 600;
+
+  color: #ffffffA0;
+}
+
 .Game {
   position: absolute;
 

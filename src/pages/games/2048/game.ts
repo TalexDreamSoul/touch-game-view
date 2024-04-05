@@ -110,6 +110,7 @@ export class Game2048 {
       this.map[x][y] = 2;
     }
 
+    this.state.score = 0
     this.state.status = 'start'
   }
 

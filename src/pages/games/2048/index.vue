@@ -37,20 +37,18 @@ watchEffect(() => {
   game.listen((_tracks: any) => {
     tracks.value = _tracks
 
-    setTimeout(() => {
-      score.value = game.state.score
-      status.value = game.state.status
+    score.value = game.state.score
+    status.value = game.state.status
 
-      if (status.value === 'end') {
-        postScore()
+    if (status.value === 'end') {
+      postScore()
 
-        // 清空缓存
-        localStorage.removeItem('__map');
-        localStorage.removeItem('__state');
+      // 清空缓存
+      localStorage.removeItem('__map');
+      localStorage.removeItem('__state');
 
-        console.log('数据上传完毕！')
-      }
-    }, 500)
+      console.log('数据上传完毕！')
+    }
   })
 
   setTimeout(() => game.start(), 200)
@@ -58,6 +56,9 @@ watchEffect(() => {
 
 function restart() {
   game.start()
+
+  score.value = game.state.score
+  status.value = game.state.status
 }
 
 function change() {

@@ -173,21 +173,25 @@ getRankings()
   position: absolute;
   padding: 0 1rem;
   display: flex;
+
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
 
   left: 50%;
-  bottom: 10%;
+  bottom: 25px;
 
   width: 85%;
+  height: 15%;
   /* height: 4rem; */
 
   background-color: #e6e6e680;
   backdrop-filter: blur(18px) saturate(180%);
 
+  overflow-y: scroll;
   border-radius: 8px;
   /* background-color: #e6e6e6; */
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 0);
   z-index: 100;
 }
 
@@ -218,13 +222,13 @@ getRankings()
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 3rem;
+  height: 20px;
   background-color: rgba(255, 255, 255, .5);
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 16px;
 
   backdrop-filter: blur(18px) saturate(180%);
 }

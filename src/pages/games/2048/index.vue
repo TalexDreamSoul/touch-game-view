@@ -37,14 +37,16 @@ watchEffect(() => {
   game.listen((_tracks: any) => {
     tracks.value = _tracks
 
-    score.value = game.state.score
-    status.value = game.state.status
+    setTimeout(() => {
+      score.value = game.state.score
+      status.value = game.state.status
 
-    if (status.value === 'end') {
-      postScore()
+      if (status.value === 'end') {
+        postScore()
 
-      console.log('数据上传完毕！')
-    }
+        console.log('数据上传完毕！')
+      }
+    }, 500)
   })
 
   setTimeout(() => game.start(), 200)

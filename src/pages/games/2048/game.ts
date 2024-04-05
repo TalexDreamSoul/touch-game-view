@@ -87,19 +87,27 @@ export class Game2048 {
   }
 
   start() {
-    Object.assign(this.map, [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ])
+    let __map = localStorage.getItem('__map')
+    if (__map?.length) {
+      Object.assign(this.map, JSON.parse(__map))
 
-    // 随机抽取两个格子赋值为 2
-    var { x, y } = this._randomSlot();
-    this.map[x][y] = 2;
+      const __state = JSON.parse(localStorage.getItem('__state')!)
+      Object.assign(this.state, __state)
+    } else {
+      Object.assign(this.map, [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ])
 
-    var { x, y } = this._randomSlot();
-    this.map[x][y] = 2;
+      // 随机抽取两个格子赋值为 2
+      var { x, y } = this._randomSlot();
+      this.map[x][y] = 2;
+
+      var { x, y } = this._randomSlot();
+      this.map[x][y] = 2;
+    }
 
     this.state.status = 'start'
   }
@@ -284,7 +292,14 @@ export class Game2048 {
     }, false);
   }
 
-  listen(callback: Function) {
+  listen(_callback: Function) {
+    const callback = () => {
+      localStorage.setItem('__map', JSON.stringify(this.map))
+      localStorage.setItem('__state', JSON.stringify(this.state))
+
+      _callback()
+    }
+
     this.listenTouch(callback)
     this.listenKeyboard(callback)
   }

@@ -17,8 +17,8 @@ const game = new Game2048()
 watchEffect(() => {
   arr.value = game.map
 
-  game.listenKeyboard((tracks: any) => {
-    tracks.value = tracks
+  game.listen((_tracks: any) => {
+    tracks.value = _tracks
 
     score.value = game.state.score
     status.value = game.state.status
@@ -68,6 +68,9 @@ watchEffect(() => {
 .Game-Bar-Title {
   font-size: 2rem;
   font-weight: 600;
+
+  color: #fff;
+  text-shadow: 0 0 8px #000;
 }
 
 .game-score {

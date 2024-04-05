@@ -83,6 +83,11 @@ export class Game2048 {
     }
 
     // 如果没有空格，且没有可以合并的相邻方块，游戏结束
+
+    // 清空缓存
+    localStorage.removeItem('__map');
+    localStorage.removeItem('__state');
+
     return true;
   }
 

@@ -36,7 +36,7 @@ function go() {
 </script>
 
 <template>
-  <RouterView />
+  <RouterView v-if="user" />
 
   <div v-if="!user" class="User">
     <p>

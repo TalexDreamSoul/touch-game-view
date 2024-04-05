@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
+import { ref, watchEffect, computed } from 'vue';
 import Block from './Block.vue';
 import { Game2048 } from './game'
 
@@ -7,12 +7,23 @@ defineOptions({
   name: '2048 Game',
 })
 
+const error = ref(false)
 const score = ref(0)
+const rankings = ref<any>([])
+const _change = ref(0)
 const status = ref("pending")
 const arr = ref<any>([])
 const tracks = ref<any>([])
 const game = new Game2048()
-// const user = useUserStore()
+// @ts-ignore
+const user = window.$name
+
+const historyHighest = computed(() => {
+  const _user = [...rankings.value].filter(res => res.user === user.savedName)
+  if (_user.length !== 1) return score.value
+
+  return Math.max(score.value, _user[0].score)
+})
 
 watchEffect(() => {
   arr.value = game.map
@@ -22,6 +33,12 @@ watchEffect(() => {
 
     score.value = game.state.score
     status.value = game.state.status
+
+    if (status.value === 'end') {
+      postScore()
+
+      console.log('数据上传完毕！')
+    }
   })
 
   setTimeout(() => game.start(), 200)
@@ -30,10 +47,80 @@ watchEffect(() => {
 function restart() {
   game.start()
 }
+
+function change() {
+  _change.value += 1
+
+  if (_change.value >= 5) {
+    _change.value = 0;
+
+    user.value = ''
+    localStorage.setItem('user', '')
+  }
+}
+
+const baseUrl = 'http://124.223.71.129:9981'
+
+function getStatus() {
+  // 向 baseUrl/status 发送 get
+  fetch(`${baseUrl}/status`)
+    .then(res => res.json())
+    .then(data => {
+      error.value = !data?.status
+    })
+    .catch(err => {
+      error.value = true
+      console.log(err)
+    })
+}
+
+function postScore() {
+  // 上传用户数据
+  // 格式: post { user: "", score: 0 }
+  fetch(`${baseUrl}/games/2048/score/${user.value}/${score.value}`, {
+    // method: 'POST',
+    // headers: {
+    //   'Content-Type': 'application/json'
+    // },
+    // body: JSON.stringify({
+    //   user: user.savedName,
+    //   score: score.value
+    // })
+  })
+    .then(res => res.json())
+    .then(data => {
+      getRankings()
+      console.log("score", data)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
+
+function getRankings() {
+  // 向 baseUrl/rank 发送 get
+  fetch(`${baseUrl}/games/2048/rank`)
+    .then(res => res.json())
+    .then(data => {
+      rankings.value = data
+      console.log("rank", data)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
+
+function reconnect() {
+  getStatus()
+}
+
+getStatus()
+getRankings()
+postScore()
 </script>
 
 <template>
-  <div class="Game">
+  <div @click="reconnect" @touchstart="reconnect" class="Game" :class="{ error }">
     <div class="Game-end" :class="{ show: status === 'end' }">
       <p>游戏结束</p>
       <button @touchstart="restart" @click="restart">重新开始</button>
@@ -47,7 +134,7 @@ function restart() {
       </div>
       <div class="Game-Bar-Line">
         历史最高
-        <span class="game-score">{{ score }}</span>
+        <span class="game-score">{{ historyHighest }}</span>
       </div>
       <div class="Game-Bar-Line">
         当前得分
@@ -60,10 +147,87 @@ function restart() {
       </div>
       <!-- <iframe src="/games/2048/index.html" width="100%" height="100%" frameborder="0" /> -->
     </div>
+
+    <div class="Rankings">
+      <span v-for="(item, index) in rankings">
+        NO{{ index + 1 }}. {{ item.user }}: {{ item.score }}
+      </span>
+    </div>
+
+    <div @click="change" @touchstart="change" class="Game-Info">
+      欢迎 {{ user }} ！
+    </div>
   </div>
 </template>
 
 <style>
+.Rankings span {
+  color: #fff;
+
+  font-size: 1.2rem;
+
+}
+
+.Rankings {
+  position: absolute;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  left: 50%;
+  bottom: 15%;
+
+  width: 24rem;
+  /* height: 4rem; */
+
+  background-color: #e6e6e680;
+  backdrop-filter: blur(18px) saturate(180%);
+
+  border-radius: 8px;
+  /* background-color: #e6e6e6; */
+  transform: translate(-50%, -50%);
+  z-index: 100;
+}
+
+.Game.error::before {
+  z-index: 100000;
+  content: "无法连接至远程服务器！";
+  position: absolute;
+
+  display: flex;
+  align-item: center;
+  justify-content: center;
+
+  left: 0;
+  top: 0;
+
+  width: 100%;
+  height: 100%;
+  line-height: 100vh;
+
+  color: red;
+  font-size: 2rem;
+  background: #ee111150;
+}
+
+.Game-Info {
+  z-index: 1000;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3rem;
+  background-color: rgba(255, 255, 255, .5);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+
+  backdrop-filter: blur(18px) saturate(180%);
+}
+
 .Game-end {
   z-index: 1001;
   position: absolute;
@@ -115,7 +279,7 @@ function restart() {
   height: 100%;
 
   background-size: cover;
-  background-image: url("./bg.jpg");
+  background-image: url("./bg.png");
 }
 
 .Game-Bar-Title {

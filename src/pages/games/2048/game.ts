@@ -247,8 +247,16 @@ export class Game2048 {
 
       return result;
     }
+
+    const el = document.getElementById('GameJust')
+
+    if (!el) {
+      console.error('GameJust 未找到')
+      return
+    }
+
     //手指接触屏幕
-    document.addEventListener("touchstart", function (e) {
+    el.addEventListener("touchstart", function (e) {
       startx = e.touches[0].pageX;
       starty = e.touches[0].pageY;
     }, false);
@@ -260,7 +268,7 @@ export class Game2048 {
     // }, { passive: false })
 
     //手指离开屏幕
-    document.addEventListener("touchend", (e) => {
+    el.addEventListener("touchend", (e) => {
       var endx, endy;
       endx = e.changedTouches[0].pageX;
       endy = e.changedTouches[0].pageY;

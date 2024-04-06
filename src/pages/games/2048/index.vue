@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { ref, watchEffect, computed } from 'vue';
+import HeadBar from './HeadBar.vue';
 import Block from './Block.vue';
+import BackFace from './BackFace.vue';
 import { Game2048 } from './game'
 
 defineOptions({
   name: '2048 Game',
 })
 
+const reverse = ref(false)
 const error = ref(false)
 const score = ref(0)
 const rankings = ref<any>([])
@@ -23,12 +26,6 @@ const historyHighest = computed(() => {
   if (_user.length !== 1) return score.value
 
   return Math.max(score.value, _user[0].score)
-})
-
-const topIndex = computed(() => {
-  const _ind = [...rankings.value].findIndex(res => res.user === user.value)
-
-  return _ind + 1 || 999
 })
 
 watchEffect(() => {
@@ -139,33 +136,20 @@ getRankings()
       <p>游戏结束</p>
       <button @touchstart="restart" @click="restart">重新开始</button>
     </div>
-    <div class="Game-Bar">
-      <div class="Game-Bar-Title">2048
+    <HeadBar :historyHighest="historyHighest" :rankings="rankings" :score="score" />
+    <div class="GameWrapper" :class="{ reverse }">
+      <div id="GameJust" class="Just">
+        <div class="BlockLine" v-for="(col, i) in arr" :key="i">
+          <Block v-for="(item, j) in col" :tracks="tracks" :key="j" :x="j" :y="i" :val="item" />
+        </div>
       </div>
-      <div class="Game-Bar-Line">
-        游戏排行
-        <span class="game-score">{{ topIndex || 0 }}</span>
+      <div class="Back">
+        <BackFace v-if="reverse" :rankings="rankings" />
       </div>
-      <div class="Game-Bar-Line">
-        历史最高
-        <span class="game-score">{{ historyHighest }}</span>
-      </div>
-      <div class="Game-Bar-Line">
-        当前得分
-        <span class="game-score">{{ score }}</span>
-      </div>
-    </div>
-    <div class="GameWrapper">
-      <div class="BlockLine" v-for="(col, i) in arr" :key="i">
-        <Block v-for="(item, j) in col" :tracks="tracks" :key="j" :x="j" :y="i" :val="item" />
-      </div>
-      <!-- <iframe src="/games/2048/index.html" width="100%" height="100%" frameborder="0" /> -->
     </div>
 
-    <div class="Rankings">
-      <span v-for="(item, index) in rankings">
-        NO{{ index + 1 }}. {{ item.user }}: {{ item.score }}
-      </span>
+    <div @click="reverse = !reverse" class="ToggleButtons">
+      <span>查看排行</span>
     </div>
 
     <div @click="change" @touchstart="change" class="Game-Info">
@@ -175,37 +159,60 @@ getRankings()
 </template>
 
 <style>
-.Rankings span {
-  color: #fff;
-
-  font-size: 1.2rem;
-
-}
-
-.Rankings {
+.ToggleButtons {
   position: absolute;
   padding: 0 1rem;
   display: flex;
 
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 
   left: 50%;
-  bottom: 25px;
+  bottom: 10%;
 
   width: 85%;
-  height: 15%;
+  height: 5%;
   /* height: 4rem; */
 
   background-color: #e6e6e680;
   backdrop-filter: blur(18px) saturate(180%);
 
+  cursor: pointer;
+  user-select: none;
   overflow-y: scroll;
   border-radius: 8px;
   /* background-color: #e6e6e6; */
   transform: translate(-50%, 0);
   z-index: 100;
+}
+
+.GameWrapper.reverse {
+  transform: translate(-50%, -50%) rotateY(180deg)
+}
+
+.GameWrapper .Back,
+.GameWrapper .Just {
+  position: absolute;
+
+  left: 0;
+  top: 0;
+
+  width: 100%;
+  height: 100%;
+
+  backface-visibility: hidden;
+}
+
+.GameWrapper.reverse .Back {
+  background-color: #e6e6e6A0;
+  transform: rotateY(180deg);
+
+  backface-visibility: visible;
+}
+
+.GameWrapper.reverse .Just {
+  backface-visibility: hidden;
 }
 
 .Game.error::before {
@@ -214,7 +221,7 @@ getRankings()
   position: absolute;
 
   display: flex;
-  align-item: center;
+  align-items: center;
   justify-content: center;
 
   left: 0;
@@ -302,60 +309,6 @@ getRankings()
   overflow: hidden;
 }
 
-.Game-Bar-Title {
-  font-size: 2rem;
-  font-weight: 600;
-
-  color: #fff;
-  text-shadow: 0 0 8px #000;
-}
-
-.game-score {
-  width: 4rem;
-
-  text-align: center;
-
-  color: #9A6E5B;
-  background: #FCF5E9A0;
-  border-radius: 8px;
-}
-
-.Game-Bar-Line {
-  display: flex;
-  padding: .5rem;
-
-  gap: .5rem;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  color: #fff;
-  border-radius: 8px;
-  background: #C4876A80;
-  backdrop-filter: blur(18px) saturate(180%);
-}
-
-.Game-Bar {
-  position: absolute;
-  padding: 0 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  left: 50%;
-  top: 10%;
-
-  width: 24rem;
-  height: 4rem;
-
-  border-radius: 8px;
-  /* background-color: #e6e6e6; */
-  transform: translate(-50%, -50%);
-  z-index: 100;
-
-  overflow: hidden;
-}
-
 .GameWrapper {
   position: absolute;
   display: flex;
@@ -370,6 +323,10 @@ getRankings()
   background-color: #e6e6e680;
   backdrop-filter: blur(18px) saturate(180%);
   transform: translate(-50%, -50%);
+
+  transition: .25s;
+  transform-style: preserve-3d;
+  perspective: 1000px;
 
   overflow: hidden;
 }

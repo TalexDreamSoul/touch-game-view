@@ -14,8 +14,15 @@ const menu = ref(0)
     </div>
     <div class="Main">
       <div :class="{ select: menu === 0 }" class="Rankings">
-        <span v-for="(item, index) in rankings">
+        <span class="Rank" :class="`Rank-${index + 1}`" v-for="(item, index) in rankings">
           No{{ index + 1 }}. {{ item.user }}: {{ item.score }}分
+
+          <span class="Float">
+            <span v-if="index === 0">大师之首</span>
+            <span v-else-if="index === 1">一代宗师</span>
+            <span v-else-if="index === 2">承蒙厚爱</span>
+            <span v-else>手下败将</span>
+          </span>
         </span>
       </div>
       <div :class="{ select: menu === 1 }" class="Awards">
@@ -26,6 +33,42 @@ const menu = ref(0)
 </template>
 
 <style>
+div.Rankings span.Float {
+  position: absolute;
+
+  right: 0;
+
+  opacity: .5;
+}
+
+div.Rankings span {
+  color: inherit;
+}
+
+div.Rankings span.Rank-1 {
+  color: red;
+  background-color: #000;
+
+  font-weight: 600;
+}
+
+div.Rankings span.Rank-2 {
+  color: yellow;
+  background-color: #262626;
+
+  font-weight: 600;
+}
+
+div.Rankings span.Rank-3 {
+  color: orange;
+  background-color: #464646;
+}
+
+div span.Rank {
+  color: #696969;
+  background-color: #F6f6f6;
+}
+
 .Main {
   position: relative;
 
@@ -79,10 +122,11 @@ const menu = ref(0)
 }
 
 .Rankings span {
+  padding: 0 .25rem;
   color: #000000EA;
 
   font-size: 1.2rem;
-
+  border-radius: 4px;
 }
 
 .Awards {
@@ -111,7 +155,7 @@ const menu = ref(0)
 
 .Rankings {
   position: absolute;
-  padding: 0 .25rem;
+  /* padding: 0 .25rem; */
   display: flex;
 
   flex-direction: column;
@@ -124,6 +168,7 @@ const menu = ref(0)
   width: 100%;
   height: 100%;
 
+  gap: .25rem;
   transition: .25s;
   transform: scale(.8) translateX(-200%);
 }

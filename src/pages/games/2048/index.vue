@@ -154,7 +154,7 @@ watch(() => reverse.value, (val) => window._ignore = val)
           <Block v-for="(item, j) in col" :tracks="tracks" :key="j" :x="j" :y="i" :val="item" />
         </div>
       </div>
-      <div @touchstart.prevent="() => void" class="Back">
+      <div class="Back">
         <BackFace v-if="reverse" :rankings="rankings" />
       </div>
     </div>

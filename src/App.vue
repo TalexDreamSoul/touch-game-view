@@ -27,7 +27,7 @@ const user = ref(localStorage.getItem("user"))
 const name = ref(user.value || "")
 
 // @ts-ignore
-// window.$name = name
+window.$name = name
 
 function go() {
   user.value = name.value

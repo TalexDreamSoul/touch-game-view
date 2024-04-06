@@ -86,6 +86,12 @@ const topIndex = computed(() => {
   transform: translate(-50%, -50%);
   z-index: 100;
 
+  transition: .25s;
+
   overflow: hidden;
+}
+
+.Game.transparency .Game-Bar {
+  top: 50%;
 }
 </style>

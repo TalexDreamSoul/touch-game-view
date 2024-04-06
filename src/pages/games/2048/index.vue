@@ -9,6 +9,7 @@ defineOptions({
   name: '2048 Game',
 })
 
+const transparency = ref(false)
 const reverse = ref(false)
 const error = ref(false)
 const score = ref(0)
@@ -20,6 +21,14 @@ const tracks = ref<any>([])
 const game = new Game2048()
 // @ts-ignore
 const user = window.$name
+
+function transparencyToggle() {
+  if (historyHighest.value <= 5000) {
+    alert('很抱歉，您需要达到 5,000 分才可以启用战绩欣赏模式！')
+    return
+  }
+  transparency.value = !transparency.value
+}
 
 const historyHighest = computed(() => {
   const _user = [...rankings.value].filter(res => res.user === user.value)
@@ -131,7 +140,7 @@ getRankings()
 </script>
 
 <template>
-  <div @click="reconnect" @touchstart="reconnect" class="Game" :class="{ error }">
+  <div @click="reconnect" @touchstart="reconnect" class="Game" :class="{ transparency, error }">
     <div class="Game-end" :class="{ show: status === 'end' }">
       <p>游戏结束</p>
       <button @touchstart="restart" @click="restart">重新开始</button>
@@ -148,8 +157,9 @@ getRankings()
       </div>
     </div>
 
-    <div @click="reverse = !reverse" class="ToggleButtons">
-      <span>查看排行</span>
+    <div class="ToggleButtons">
+      <span @click="reverse = !reverse">查看排行</span>
+      <span @click="transparencyToggle">战绩欣赏</span>
     </div>
 
     <div @click="change" @touchstart="change" class="Game-Info">
@@ -159,12 +169,30 @@ getRankings()
 </template>
 
 <style>
+.Game.transparency .GameWrapper {
+  pointer-events: none;
+  opacity: 0.5;
+
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  transform: translate(-50%, -120%) scale(0) rotate3D(0.5, 0, 0, 320deg);
+}
+
+.ToggleButtons span {
+  padding: 0 1rem;
+
+  flex: 1;
+  text-align: center;
+  border-radius: 8px;
+  background-color: #e6e6e680;
+  backdrop-filter: blur(18px) saturate(180%);
+}
+
 .ToggleButtons {
   position: absolute;
-  padding: 0 1rem;
   display: flex;
 
-  flex-direction: column;
+  gap: 1rem;
   justify-content: center;
   align-items: center;
 
@@ -175,13 +203,9 @@ getRankings()
   height: 5%;
   /* height: 4rem; */
 
-  background-color: #e6e6e680;
-  backdrop-filter: blur(18px) saturate(180%);
-
   cursor: pointer;
   user-select: none;
   overflow-y: scroll;
-  border-radius: 8px;
   /* background-color: #e6e6e6; */
   transform: translate(-50%, 0);
   z-index: 100;

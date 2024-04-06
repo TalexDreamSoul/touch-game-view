@@ -78,6 +78,9 @@ function change() {
   _change.value += 1
 
   if (_change.value >= 5) {
+    // 弹出确认框
+    if ( !confirm("切换账号会导致本地数据被清空，是否继续？") ) return
+
     _change.value = 0;
 
     user.value = ''
@@ -85,6 +88,8 @@ function change() {
 
     localStorage.removeItem('__map');
     localStorage.removeItem('__state');
+
+    location.reload()
   }
 }
 
@@ -177,7 +182,7 @@ watch(() => reverse.value, (val) => window._ignore = val)
     </div>
 
     <div @click="change" @touchstart="change" class="Game-Info">
-      欢迎 {{ user }} ！ <span class="version">v464/{{ options.version }}</span>
+      欢迎 {{ user }} ！ <span class="version">v465/{{ options.version }}</span>
     </div>
   </div>
 </template>

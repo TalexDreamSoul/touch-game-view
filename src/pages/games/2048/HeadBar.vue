@@ -34,7 +34,7 @@ const topIndex = computed(() => {
     </div>
   </div>
   <div class="Game-SubBar">
-    当前有 {{ online.length }} 个玩家正在游戏...
+    当前有 {{ online.length || 1 }} 个玩家正在游戏...
   </div>
 </template>
 

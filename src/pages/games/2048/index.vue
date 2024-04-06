@@ -4,6 +4,7 @@ import HeadBar from './HeadBar.vue';
 import Block from './Block.vue';
 import BackFace from './BackFace.vue';
 import { Game2048, getUserStatus, getOnline, updateOnlineStatus } from './game'
+import BGM from './BGM.mp3'
 
 defineOptions({
   name: '2048 Game',
@@ -85,7 +86,7 @@ function change() {
 
   if (_change.value >= 5) {
     // 弹出确认框
-    if ( !confirm("切换账号会导致本地数据被清空，是否继续？") ) return
+    if (!confirm("切换账号会导致本地数据被清空，是否继续？")) return
 
     _change.value = 0;
 
@@ -190,6 +191,8 @@ watch(() => reverse.value, (val) => window._ignore = val)
     <div @click="change" @touchstart="change" class="Game-Info">
       欢迎 {{ user }} ！ <span class="version">v466/{{ options.version }}</span>
     </div>
+
+    <audio :src="BGM" autoplay preload="auto"></audio>
   </div>
 </template>
 

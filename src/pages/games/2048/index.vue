@@ -27,8 +27,6 @@ const game = new Game2048()
 // @ts-ignore
 const user = window.$name
 
-getUserStatus(user.value, (res: any) => options.personal = res)
-
 function transparencyToggle() {
   if (historyHighest.value <= 5000) {
     alert('很抱歉，您需要达到 5,000 分才可以启用战绩欣赏模式！')
@@ -47,6 +45,7 @@ const historyHighest = computed(() => {
 watchEffect(() => {
   arr.value = game.map
 
+  getUserStatus(user.value, (res: any) => options.personal = res)
   game.listen((_tracks: any) => {
     tracks.value = _tracks
 
@@ -54,6 +53,7 @@ watchEffect(() => {
     status.value = game.state.status
 
     if (status.value === 'end') {
+      getUserStatus(user.value, (res: any) => options.personal = res)
       postScore()
 
       // 清空缓存
@@ -106,7 +106,7 @@ function getStatus() {
 }
 
 function postScore() {
-  if (historyHighest.value > score.value) return
+  // if (historyHighest.value > score.value) return
 
   // 上传用户数据
   // 格式: post { user: "", score: 0 }
@@ -173,11 +173,11 @@ watch(() => reverse.value, (val) => window._ignore = val)
 
     <div class="ToggleButtons">
       <span @touchstart.prevent="reverse = !reverse" @click="reverse = !reverse">查看排行</span>
-      <span @click="transparencyToggle">战绩欣赏</span>
+      <span @touchstart.prevent="transparencyToggle" @click="transparencyToggle">战绩欣赏</span>
     </div>
 
     <div @click="change" @touchstart="change" class="Game-Info">
-      欢迎 {{ user }} ！ <span class="version">v463/{{ options.version }}</span>
+      欢迎 {{ user }} ！ <span class="version">v464/{{ options.version }}</span>
     </div>
   </div>
 </template>

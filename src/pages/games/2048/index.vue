@@ -82,6 +82,9 @@ function change() {
 
     user.value = ''
     localStorage.setItem('user', '')
+
+    localStorage.removeItem('__map');
+    localStorage.removeItem('__state');
   }
 }
 
@@ -174,7 +177,7 @@ watch(() => reverse.value, (val) => window._ignore = val)
     </div>
 
     <div @click="change" @touchstart="change" class="Game-Info">
-      欢迎 {{ user }} ！ <span class="version">v461/{{ options.version }}</span>
+      欢迎 {{ user }} ！ <span class="version">v462/{{ options.version }}</span>
     </div>
   </div>
 </template>

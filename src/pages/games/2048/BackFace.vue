@@ -9,8 +9,8 @@ const menu = ref(0)
 <template>
   <div class="BackFace">
     <div class="Menu">
-      <span @click="menu = 0" :class="{ select: menu === 0 }">排行</span>
-      <span @click="menu = 1" :class="{ select: menu === 1 }">奖章</span>
+      <span @touchstart.prevent="menu = 0" @click="menu = 0" :class="{ select: menu === 0 }">排行</span>
+      <span @touchstart.prevent="menu = 1" @click="menu = 1" :class="{ select: menu === 1 }">奖章</span>
     </div>
     <div class="Main">
       <div :class="{ select: menu === 0 }" class="Rankings">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watchEffect, computed } from 'vue';
+import { ref, watchEffect, computed, watch } from 'vue';
 import HeadBar from './HeadBar.vue';
 import Block from './Block.vue';
 import BackFace from './BackFace.vue';
@@ -137,6 +137,8 @@ function reconnect() {
 
 getStatus()
 getRankings()
+
+watch(() => reverse.value, (val) => window._ignore = val)
 </script>
 
 <template>
@@ -152,13 +154,13 @@ getRankings()
           <Block v-for="(item, j) in col" :tracks="tracks" :key="j" :x="j" :y="i" :val="item" />
         </div>
       </div>
-      <div class="Back">
+      <div @touchstart.prevent="() => void" class="Back">
         <BackFace v-if="reverse" :rankings="rankings" />
       </div>
     </div>
 
     <div class="ToggleButtons">
-      <span @click="reverse = !reverse">查看排行</span>
+      <span @touchstart.prevent="reverse = !reverse" @click="reverse = !reverse">查看排行</span>
       <span @click="transparencyToggle">战绩欣赏</span>
     </div>
 

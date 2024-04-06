@@ -94,6 +94,15 @@ export class Game2048 {
 
       const __state = JSON.parse(localStorage.getItem('__state')!)
       Object.assign(this.state, __state)
+
+      // 如果地图全都是0 那么就删除缓存 重新start
+      if (this.map.every(row => row.every(cell => cell === 0))) {
+        alert('游戏数据已损坏，请重新开始！')
+        localStorage.removeItem('__map')
+        localStorage.removeItem('__state')
+        this.start()
+        return
+      }
     } else {
       Object.assign(this.map, [
         [0, 0, 0, 0],

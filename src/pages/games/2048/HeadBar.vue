@@ -2,7 +2,8 @@
 const props = defineProps<{
   rankings: any,
   historyHighest: number,
-  score: number
+  score: number,
+  online: any
 }>()
 
 // @ts-ignore
@@ -31,6 +32,9 @@ const topIndex = computed(() => {
       当前得分
       <span class="game-score">{{ score }}</span>
     </div>
+  </div>
+  <div class="Game-SubBar">
+    当前有 {{ online.length }} 个玩家正在游戏...
   </div>
 </template>
 
@@ -66,6 +70,30 @@ const topIndex = computed(() => {
   border-radius: 8px;
   background: #C4876A80;
   backdrop-filter: blur(18px) saturate(180%);
+}
+
+.Game-SubBar {
+  position: absolute;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  left: 50%;
+  top: 20%;
+
+  width: 24rem;
+  height: 4rem;
+
+  opacity: .5;
+  border-radius: 8px;
+  /* background-color: #e6e6e6; */
+  transform: translate(-50%, -50%);
+  z-index: 100;
+
+  transition: .25s;
+
+  overflow: hidden;
 }
 
 .Game-Bar {

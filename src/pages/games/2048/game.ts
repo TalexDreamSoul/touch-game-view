@@ -365,3 +365,26 @@ export function getUserStatus(user: string, cb: Function) {
       console.log(err)
     })
 }
+
+export function updateOnlineStatus(user: string) {
+  fetch(`${baseUrl}/online/${user}`)
+    .then(res => res.json())
+    .then(data => {
+      console.log('refresh online', data)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
+
+export function getOnline(cb: Function) {
+  fetch(`${baseUrl}/online`)
+    .then(res => res.json())
+    .then(data => {
+      cb(data)
+      console.log('onlines', data)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}

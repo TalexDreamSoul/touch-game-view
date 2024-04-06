@@ -3,7 +3,7 @@ import { ref, watchEffect, computed, watch } from 'vue';
 import HeadBar from './HeadBar.vue';
 import Block from './Block.vue';
 import BackFace from './BackFace.vue';
-import { Game2048, getUserStatus } from './game'
+import { Game2048, getUserStatus, getOnline, updateOnlineStatus } from './game'
 
 defineOptions({
   name: '2048 Game',
@@ -12,7 +12,8 @@ defineOptions({
 const options = reactive({
   error: false,
   version: "",
-  personal: {}
+  personal: {},
+  online: []
 })
 
 const transparency = ref(false)
@@ -51,6 +52,11 @@ watchEffect(() => {
 
     score.value = game.state.score
     status.value = game.state.status
+
+    updateOnlineStatus(user.value)
+    getOnline((res: any) => {
+      options.online = res.online_users
+    })
 
     if (status.value === 'end') {
       getUserStatus(user.value, (res: any) => options.personal = res)
@@ -164,7 +170,7 @@ watch(() => reverse.value, (val) => window._ignore = val)
       <p>游戏结束</p>
       <button @touchstart="restart" @click="restart">重新开始</button>
     </div>
-    <HeadBar :historyHighest="historyHighest" :rankings="rankings" :score="score" />
+    <HeadBar :online="options.online" :historyHighest="historyHighest" :rankings="rankings" :score="score" />
     <div class="GameWrapper" :class="{ reverse }">
       <div id="GameJust" class="Just">
         <div v-if="options.version" class="BlockLine" v-for="(col, i) in arr" :key="i">
@@ -182,7 +188,7 @@ watch(() => reverse.value, (val) => window._ignore = val)
     </div>
 
     <div @click="change" @touchstart="change" class="Game-Info">
-      欢迎 {{ user }} ！ <span class="version">v465/{{ options.version }}</span>
+      欢迎 {{ user }} ！ <span class="version">v466/{{ options.version }}</span>
     </div>
   </div>
 </template>
@@ -357,7 +363,7 @@ watch(() => reverse.value, (val) => window._ignore = val)
 
   overflow: hidden;
 
-  animation: hue 10s infinite linear;
+  animation: hue 30s infinite linear;
 }
 
 @keyframes hue {

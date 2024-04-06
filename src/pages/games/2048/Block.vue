@@ -111,7 +111,7 @@ colors[128] = '#2c3e50'
   height: 23%;
 
   opacity: .75;
-  transition: ease-in .25s;
+  transition: ease-in .125s;
   border-radius: 8px;
   background-color: #f6f6f6;
 }

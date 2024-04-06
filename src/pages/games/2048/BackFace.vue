@@ -16,7 +16,9 @@ const menu = ref(0)
     <div class="Main">
       <div :class="{ select: menu === 0 }" class="Rankings">
         <span class="Rank" :class="`Rank-${index + 1}`" v-for="(item, index) in rankings">
-          No{{ index + 1 }}. {{ item.user }}: {{ item.score }}分
+          {{ index + 1 }}. {{ item.user }}<span class="online-status"
+            v-if="options.online.indexOf(item.user) !== -1">在线</span>: {{ item.score
+          }}分
 
           <span class="Float">
             <span v-if="index === 0">大师之首</span>
@@ -35,6 +37,11 @@ const menu = ref(0)
 </template>
 
 <style>
+div span.online-status {
+  opacity: .5;
+  font-size: .75rem;
+}
+
 div.Rankings span.Float {
   position: absolute;
 

@@ -340,3 +340,18 @@ export class Game2048 {
     })
   }
 }
+
+const baseUrl = 'https://124.223.71.129:9981'
+
+export function getUserStatus(user: string, cb: Function) {
+  // 向 baseUrl/status 发送 get
+  fetch(`${baseUrl}/games/2048/score/${user}`)
+    .then(res => res.json())
+    .then(data => {
+      cb(data)
+      console.log('data', data)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}

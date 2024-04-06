@@ -3,15 +3,20 @@ import { ref, watchEffect, computed, watch } from 'vue';
 import HeadBar from './HeadBar.vue';
 import Block from './Block.vue';
 import BackFace from './BackFace.vue';
-import { Game2048 } from './game'
+import { Game2048, getUserStatus } from './game'
 
 defineOptions({
   name: '2048 Game',
 })
 
+const options = reactive({
+  error: false,
+  version: "",
+  personal: {}
+})
+
 const transparency = ref(false)
 const reverse = ref(false)
-const error = ref(false)
 const score = ref(0)
 const rankings = ref<any>([])
 const _change = ref(0)
@@ -21,6 +26,8 @@ const tracks = ref<any>([])
 const game = new Game2048()
 // @ts-ignore
 const user = window.$name
+
+getUserStatus(user.value, (res: any) => options.personal = res)
 
 function transparencyToggle() {
   if (historyHighest.value <= 5000) {
@@ -85,10 +92,11 @@ function getStatus() {
   fetch(`${baseUrl}/status`)
     .then(res => res.json())
     .then(data => {
-      error.value = !data?.status
+      options.version = data?.version
+      options.error = !data?.status
     })
     .catch(err => {
-      error.value = true
+      options.error = true
       console.log(err)
     })
 }
@@ -142,7 +150,7 @@ watch(() => reverse.value, (val) => window._ignore = val)
 </script>
 
 <template>
-  <div @click="reconnect" @touchstart="reconnect" class="Game" :class="{ transparency, error }">
+  <div @click="reconnect" @touchstart="reconnect" class="Game" :class="{ transparency, error: options.error }">
     <div class="Game-end" :class="{ show: status === 'end' }">
       <p>游戏结束</p>
       <button @touchstart="restart" @click="restart">重新开始</button>
@@ -150,12 +158,12 @@ watch(() => reverse.value, (val) => window._ignore = val)
     <HeadBar :historyHighest="historyHighest" :rankings="rankings" :score="score" />
     <div class="GameWrapper" :class="{ reverse }">
       <div id="GameJust" class="Just">
-        <div class="BlockLine" v-for="(col, i) in arr" :key="i">
+        <div v-if="options.version" class="BlockLine" v-for="(col, i) in arr" :key="i">
           <Block v-for="(item, j) in col" :tracks="tracks" :key="j" :x="j" :y="i" :val="item" />
         </div>
       </div>
       <div class="Back">
-        <BackFace v-if="reverse" :rankings="rankings" />
+        <BackFace v-if="reverse" :options="options" :rankings="rankings" />
       </div>
     </div>
 
@@ -165,12 +173,17 @@ watch(() => reverse.value, (val) => window._ignore = val)
     </div>
 
     <div @click="change" @touchstart="change" class="Game-Info">
-      欢迎 {{ user }} ！
+      欢迎 {{ user }} ！ <span class="version">v461/{{ options.version }}</span>
     </div>
   </div>
 </template>
 
 <style>
+.version {
+  opacity: .5;
+  font-size: 0.8rem;
+}
+
 .Game.transparency .GameWrapper {
   pointer-events: none;
   opacity: 0.5;
@@ -181,7 +194,7 @@ watch(() => reverse.value, (val) => window._ignore = val)
 }
 
 .ToggleButtons span {
-  padding: 0 1rem;
+  padding: .25rem 1rem;
 
   flex: 1;
   text-align: center;
@@ -330,9 +343,22 @@ watch(() => reverse.value, (val) => window._ignore = val)
   height: 100%;
 
   background-size: cover;
-  background-image: url("./bg.png");
+  background-image: linear-gradient(120deg, #e0c3fcE0 0%, #8ec5fcE0 100%);
+  /* background-image: url("./bg.png"); */
 
   overflow: hidden;
+
+  animation: hue 10s infinite linear;
+}
+
+@keyframes hue {
+  from {
+    filter: hue-rotate(0deg);
+  }
+
+  to {
+    filter: hue-rotate(360deg);
+  }
 }
 
 .GameWrapper {
@@ -342,8 +368,8 @@ watch(() => reverse.value, (val) => window._ignore = val)
   top: 50%;
   left: 50%;
 
-  width: 20rem;
-  height: 20rem;
+  width: 22rem;
+  height: 22rem;
 
   border-radius: 8px;
   background-color: #e6e6e680;

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   rankings: any,
+  options: any
 }>()
 
 const menu = ref(0)
@@ -27,6 +28,7 @@ const menu = ref(0)
       </div>
       <div :class="{ select: menu === 1 }" class="Awards">
         你还没有获得任何奖章.
+        {{ options.personal }}
       </div>
     </div>
   </div>

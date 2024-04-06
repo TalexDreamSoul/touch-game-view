@@ -189,7 +189,7 @@ watch(() => reverse.value, (val) => window._ignore = val)
     </div>
 
     <div @click="change" @touchstart="change" class="Game-Info">
-      欢迎 {{ user }} ！ <span class="version">v466/{{ options.version }}</span>
+      欢迎 {{ user }} ！ <span class="version">v471/{{ options.version }}</span>
     </div>
 
     <audio :src="BGM" autoplay preload="auto"></audio>

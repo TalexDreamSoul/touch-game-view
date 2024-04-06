@@ -85,7 +85,8 @@ function change() {
   }
 }
 
-const baseUrl = 'https://124.223.71.129:9981'
+// const baseUrl = 'https://124.223.71.129:9981'
+const baseUrl = 'https://gameends.tagzxia.com:9981'
 
 function getStatus() {
   // 向 baseUrl/status 发送 get

@@ -341,7 +341,8 @@ export class Game2048 {
   }
 }
 
-const baseUrl = 'https://124.223.71.129:9981'
+// const baseUrl = 'https://124.223.71.129:9981'
+const baseUrl = 'https://gameends.tagzxia.com:9981'
 
 export function getUserStatus(user: string, cb: Function) {
   // 向 baseUrl/status 发送 get

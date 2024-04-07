@@ -125,6 +125,7 @@ export class Game2048 {
 
       const __state = JSON.parse(localStorage.getItem('__state')!)
       Object.assign(this.state, __state)
+      // this.state = reactive({ ...__state })
 
       // 如果地图全都是0 那么就删除缓存 重新start
       if (this.map.every(row => row.every(cell => cell === 0))) {
@@ -148,10 +149,11 @@ export class Game2048 {
 
       var { x, y } = this._randomSlot();
       this.map[x][y] = 2;
+
+      this.state.score = 0
+      this.state.status = 'start'
     }
 
-    this.state.score = 0
-    this.state.status = 'start'
   }
 
   move(direction: Direction) {

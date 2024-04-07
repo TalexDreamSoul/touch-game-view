@@ -163,7 +163,7 @@ document.addEventListener('visibilitychange', () => {
     <Records :show="options.recordsMode" :data="options.personal" />
 
     <div @click="change" @touchstart="change" class="Game-Info">
-      欢迎 {{ user }} ！ <span class="version">v476/{{ options.version }}</span>
+      欢迎 {{ user }} ！ <span class="version">v477/{{ options.version }}</span>
     </div>
 
     <div @touchstart="options.mute = !options.mute" @click="options.mute = !options.mute" class="mute">

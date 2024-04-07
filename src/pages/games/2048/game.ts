@@ -17,6 +17,10 @@ export interface GameState {
 export class Game2048 {
   map: Array<Array<number>>
   state: GameState
+  rankings: any
+  name: string | null = null
+  onlinePlayers: string[]
+  personal: any
 
   directions = {
     'up': (i: number, j: number) => [i + 1, j],
@@ -36,6 +40,9 @@ export class Game2048 {
       status: "pending",
       score: 0,
     })
+    this.rankings = ref([])
+    this.personal = ref({})
+    this.onlinePlayers = reactive([])
 
     // console.log("Game 2048");
   }
@@ -50,7 +57,7 @@ export class Game2048 {
     return { x, y };
   }
 
-  isGameOver(board) {
+  isGameOver(board: any) {
     // 检查棋盘上是否还有空格
     for (let i = 0; i < board.length; i++) {
       for (let j = 0; j < board[i].length; j++) {
@@ -87,7 +94,29 @@ export class Game2048 {
     return true;
   }
 
-  start() {
+  refreshRankings() {
+    getRankings((res: any) => this.rankings.value = res)
+  }
+
+  lastUpdate = -1
+
+  updateUserOnlineStatus() {
+    if (new Date().getTime() - this.lastUpdate < 1000 * 15) return
+    this.lastUpdate = new Date().getTime()
+
+    updateOnlineStatus(this.name!)
+    getUserStatus(this.name!, (res: any) => this.personal.value = res)
+    getOnline((res: any) => {
+      Object.assign(this.onlinePlayers, res.online_users)
+    })
+    this.refreshRankings()
+
+  }
+
+  start(name: string) {
+    this.name = name
+    this.updateUserOnlineStatus()
+
     let __map = localStorage.getItem('__map')
     if (__map?.length) {
       Object.assign(this.map, JSON.parse(__map))
@@ -100,7 +129,7 @@ export class Game2048 {
         alert('游戏数据已损坏，请重新开始！')
         localStorage.removeItem('__map')
         localStorage.removeItem('__state')
-        this.start()
+        this.start(name)
         return
       }
     } else {
@@ -221,6 +250,8 @@ export class Game2048 {
     this.map[obj.x][obj.y] =
       Math.random() < 0.3 ? 4 : 2
 
+    this.updateUserOnlineStatus()
+
     return tracks
   }
 
@@ -274,6 +305,7 @@ export class Game2048 {
     //手指离开屏幕
     document.addEventListener("touchend", (e) => {
       if (window._ignore) return
+      if (this.state.status !== 'start') return
 
       var endx, endy;
       endx = e.changedTouches[0].pageX;
@@ -311,8 +343,8 @@ export class Game2048 {
     }, false);
   }
 
-  listen(_callback: Function) {
-    const callback = (res: any) => {
+  listen(_callback: (res: Track[] | null) => void) {
+    const callback = (res: Track[] | null) => {
       localStorage.setItem('__map', JSON.stringify(this.map))
       localStorage.setItem('__state', JSON.stringify(this.state))
 
@@ -321,10 +353,14 @@ export class Game2048 {
 
     this.listenTouch(callback)
     this.listenKeyboard(callback)
+
+    _callback(null)
   }
 
   listenKeyboard(callback: Function) {
     document.addEventListener('keydown', (e) => {
+      if (this.state.status !== 'start') return
+
       let res
       switch (e.key) {
         case 'ArrowUp':
@@ -342,8 +378,9 @@ export class Game2048 {
       }
 
       const over = this.isGameOver(this.map)
-      if (over)
+      if (over) {
         this.state.status = "end"
+      }
 
       callback(res)
     })
@@ -352,6 +389,24 @@ export class Game2048 {
 
 // const baseUrl = 'https://124.223.71.129:9981'
 const baseUrl = 'https://gameends.tagzxia.com:9981'
+
+let timer: any
+
+export function postScore(user: string, score: number) {
+  clearTimeout(timer)
+
+  timer = setTimeout(() => {
+    fetch(`${baseUrl}/games/2048/score/${user}/${score}`, {
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log("score", data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }, 200)
+}
 
 export function getUserStatus(user: string, cb: Function) {
   // 向 baseUrl/status 发送 get
@@ -383,6 +438,19 @@ export function getOnline(cb: Function) {
     .then(data => {
       cb(data)
       console.log('onlines', data)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
+
+export function getRankings(cb: Function) {
+  // 向 baseUrl/rank 发送 get
+  fetch(`${baseUrl}/games/2048/rank`)
+    .then(res => res.json())
+    .then(data => {
+      cb(data)
+      console.log("rank", data)
     })
     .catch(err => {
       console.log(err)

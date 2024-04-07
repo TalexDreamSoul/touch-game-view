@@ -10,7 +10,7 @@ const props = defineProps<{
 const user = window.$name
 
 const topIndex = computed(() => {
-  const _ind = [...props.rankings].findIndex(res => res.user === user.value)
+  const _ind = [...props.rankings.value].findIndex(res => res.user === user.value)
 
   return _ind + 1 || 999
 })
@@ -119,7 +119,7 @@ const topIndex = computed(() => {
   overflow: hidden;
 }
 
-.Game.transparency .Game-Bar {
-  top: 50%;
+.Game.records .Game-Bar {
+  opacity: 0;
 }
 </style>

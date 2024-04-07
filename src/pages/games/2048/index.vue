@@ -1,31 +1,31 @@
 <script setup lang="ts">
-import { ref, watchEffect, computed, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 import HeadBar from './HeadBar.vue';
 import Block from './Block.vue';
+import Records from './Records.vue';
 import BackFace from './BackFace.vue';
-import { Game2048, getUserStatus, getOnline, updateOnlineStatus } from './game'
+import { Game2048, postScore } from './game'
 import BGM from './BGM.mp3'
 
 defineOptions({
   name: '2048 Game',
 })
 
-const options = reactive({
-  error: false,
-  version: "",
-  personal: {},
-  online: []
-})
-
-const transparency = ref(false)
-const reverse = ref(false)
-const score = ref(0)
-const rankings = ref<any>([])
 const _change = ref(0)
-const status = ref("pending")
-const arr = ref<any>([])
 const tracks = ref<any>([])
 const game = new Game2048()
+
+const options = reactive({
+  recordsMode: false,
+  reverse: false,
+  error: false,
+  version: "",
+  personal: game.personal,
+  online: game.onlinePlayers,
+  state: game.state,
+  game: null,
+})
+
 // @ts-ignore
 const user = window.$name
 
@@ -34,56 +34,37 @@ function transparencyToggle() {
     alert('很抱歉，您需要达到 5,000 分才可以启用战绩欣赏模式！')
     return
   }
-  transparency.value = !transparency.value
+  options.recordsMode = !options.recordsMode
 }
 
 const historyHighest = computed(() => {
-  const _user = [...rankings.value].filter(res => res.user === user.value)
-  if (_user.length !== 1) return score.value
+  const _user = [...game.rankings.value].filter(res => res.user === user.value)
+  if (_user.length !== 1) return options.state.score
 
-  return Math.max(score.value, _user[0].score)
+  return Math.max(options.state.score, _user[0].score)
 })
 
-watchEffect(() => {
-  arr.value = game.map
+game.listen((_tracks: any) => {
+  tracks.value = _tracks
 
-  getUserStatus(user.value, (res: any) => options.personal = res)
-  game.listen((_tracks: any) => {
-    tracks.value = _tracks
+  const music = document.getElementById('music') as HTMLAudioElement
+  if (options.state.status === 'end') {
+    // options.state.status = 'pending'
+    postScore(user.name, options.state.score)
 
-    score.value = game.state.score
-    status.value = game.state.status
+    // 清空缓存
+    localStorage.removeItem('__map');
+    localStorage.removeItem('__state');
 
-    updateOnlineStatus(user.value)
-    getOnline((res: any) => {
-      options.online = res.online_users
-    })
+    music?.pause?.()
+  } else music?.play?.()
 
-    if (status.value === 'end') {
-      getUserStatus(user.value, (res: any) => options.personal = res)
-      postScore()
-
-      // 清空缓存
-      localStorage.removeItem('__map');
-      localStorage.removeItem('__state');
-
-      console.log('数据上传完毕！')
-    }
-
-    // 获取 music audio 播放
-    const music = document.getElementById('music') as HTMLAudioElement
-    if (status.value === 'end') music.pause()
-    else music.play()
-  })
-
-  setTimeout(() => game.start(), 200)
 })
+
+setTimeout(() => game.start(user.value), 200)
 
 function restart() {
-  game.start()
-
-  score.value = game.state.score
-  status.value = game.state.status
+  game.start(user.value)
 }
 
 function change() {
@@ -122,79 +103,47 @@ function getStatus() {
     })
 }
 
-function postScore() {
-  // if (historyHighest.value > score.value) return
-
-  // 上传用户数据
-  // 格式: post { user: "", score: 0 }
-  fetch(`${baseUrl}/games/2048/score/${user.value}/${score.value}`, {
-    // method: 'POST',
-    // headers: {
-    //   'Content-Type': 'application/json'
-    // },
-    // body: JSON.stringify({
-    //   user: user.savedName,
-    //   score: score.value
-    // })
-  })
-    .then(res => res.json())
-    .then(data => {
-      getRankings()
-      console.log("score", data)
-    })
-    .catch(err => {
-      console.log(err)
-    })
-}
-
-function getRankings() {
-  // 向 baseUrl/rank 发送 get
-  fetch(`${baseUrl}/games/2048/rank`)
-    .then(res => res.json())
-    .then(data => {
-      rankings.value = data
-      console.log("rank", data)
-    })
-    .catch(err => {
-      console.log(err)
-    })
-}
 
 function reconnect() {
   getStatus()
 }
 
 getStatus()
-getRankings()
 
-watch(() => reverse.value, (val) => window._ignore = val)
+// @ts-ignore force exist
+watch(() => options.reverse, (val) => window._ignore = val)
 </script>
 
 <template>
-  <div @click="reconnect" @touchstart="reconnect" class="Game" :class="{ transparency, error: options.error }">
-    <div class="Game-end" :class="{ show: status === 'end' }">
+  <div @click="reconnect" @touchstart="reconnect" class="Game"
+    :class="{ records: options.recordsMode, error: options.error }">
+    <div class="Game-end" :class="{ show: options.state.status === 'end' }">
       <p>游戏结束</p>
       <button @touchstart="restart" @click="restart">重新开始</button>
     </div>
-    <HeadBar :online="options.online" :historyHighest="historyHighest" :rankings="rankings" :score="score" />
-    <div class="GameWrapper" :class="{ reverse }">
+    <HeadBar :online="options.online" :historyHighest="historyHighest" :rankings="game.rankings"
+      :score="options.state.score" />
+    <div class="GameWrapper" :class="{ reverse: options.reverse }">
       <div id="GameJust" class="Just">
-        <div v-if="options.version" class="BlockLine" v-for="(col, i) in arr" :key="i">
+        <div v-if="options.version" class="BlockLine" v-for="(col, i) in game.map" :key="i">
           <Block v-for="(item, j) in col" :tracks="tracks" :key="j" :x="j" :y="i" :val="item" />
         </div>
       </div>
       <div class="Back">
-        <BackFace v-if="reverse" :options="options" :rankings="rankings" />
+        <BackFace v-if="options.reverse" :options="options" :rankings="game.rankings" />
       </div>
     </div>
 
     <div class="ToggleButtons">
-      <span @touchstart.prevent="reverse = !reverse" @click="reverse = !reverse">查看排行</span>
+      <span @touchstart.prevent="options.reverse = !options.reverse"
+        @click="options.reverse = !options.reverse">查看排行</span>
       <span @touchstart.prevent="transparencyToggle" @click="transparencyToggle">战绩欣赏</span>
     </div>
 
+    <Records :show="options.recordsMode" :data="options.personal" />
+
     <div @click="change" @touchstart="change" class="Game-Info">
-      欢迎 {{ user }} ！ <span class="version">v471/{{ options.version }}</span>
+      欢迎 {{ user }} ！ <span class="version">v473/{{ options.version }}</span>
     </div>
 
     <audio id="music" :src="BGM" autoplay="false" preload="auto"></audio>
@@ -207,13 +156,17 @@ watch(() => reverse.value, (val) => window._ignore = val)
   font-size: 0.8rem;
 }
 
-.Game.transparency .GameWrapper {
+.Game.records .GameWrapper {
   pointer-events: none;
   opacity: 0.5;
 
   perspective: 1000px;
   transform-style: preserve-3d;
   transform: translate(-50%, -120%) scale(0) rotate3D(0.5, 0, 0, 320deg);
+}
+
+.Game.records .ToggleButtons {
+  bottom: 92.5%;
 }
 
 .ToggleButtons span {
@@ -247,6 +200,8 @@ watch(() => reverse.value, (val) => window._ignore = val)
   /* background-color: #e6e6e6; */
   transform: translate(-50%, 0);
   z-index: 100;
+
+  transition: .25s;
 }
 
 .GameWrapper.reverse {

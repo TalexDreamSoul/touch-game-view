@@ -112,6 +112,13 @@ getStatus()
 
 // @ts-ignore force exist
 watch(() => options.reverse, (val) => window._ignore = val)
+
+// 监听用户是否离开页面
+document.addEventListener('visibilitychange', () => {
+  const music = document.getElementById('music') as HTMLAudioElement
+  if (document.visibilityState === 'hidden') music?.pause?.()
+  else music?.play?.()
+})
 </script>
 
 <template>
@@ -143,7 +150,7 @@ watch(() => options.reverse, (val) => window._ignore = val)
     <Records :show="options.recordsMode" :data="options.personal" />
 
     <div @click="change" @touchstart="change" class="Game-Info">
-      欢迎 {{ user }} ！ <span class="version">v474/{{ options.version }}</span>
+      欢迎 {{ user }} ！ <span class="version">v475/{{ options.version }}</span>
     </div>
 
     <audio id="music" :src="BGM" autoplay="false" preload="auto"></audio>

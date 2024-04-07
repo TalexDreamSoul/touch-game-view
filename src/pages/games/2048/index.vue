@@ -170,7 +170,7 @@ watch(() => options.error || options.reverse, (val) => window._ignore = val)
     <Settings :show="options.recordsMode" :data="gameSettings" />
 
     <div @click="change" @touchstart="change" class="Game-Info">
-      欢迎 {{ user }} ！ <span class="version">v481/{{ options.version }}</span>
+      欢迎 {{ user }} ！ <span class="version">v482/{{ options.version }}</span>
     </div>
 
     <!-- <div @touchstart="options.mute = !options.mute" @click="options.mute = !options.mute" class="mute">

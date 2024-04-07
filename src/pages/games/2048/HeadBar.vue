@@ -14,6 +14,31 @@ const topIndex = computed(() => {
 
   return _ind + 1 || 999
 })
+
+const broadcastIndex = ref(0)
+const broadcasts = ref([
+  () => `当前有${props.online.length || 1} 个玩家正在游戏...`,
+  () => `全新交换模式，单局 1,000 分自动解锁`, ,
+  () => `4.14 12:00 前第一名可领取奖励`
+])
+
+const broadcast = computed(() =>
+  broadcasts.value[broadcastIndex.value]?.()
+)
+
+let end: boolean = false
+onMounted(() => {
+  function _b() {
+    if (end) return
+    broadcastIndex.value = (broadcastIndex.value + 1) % broadcasts.value.length
+
+    setTimeout(_b, 5000)
+  }
+
+  _b()
+})
+
+onBeforeUnmount(() => end = true)
 </script>
 
 <template>
@@ -34,7 +59,8 @@ const topIndex = computed(() => {
     </div>
   </div>
   <div class="Game-SubBar">
-    当前有 {{ online.length || 1 }} 个玩家正在游戏...
+    {{ broadcast }}
+    <!-- 当前有 {{ online.length || 1 }} 个玩家正在游戏... -->
   </div>
 </template>
 

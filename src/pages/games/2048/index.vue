@@ -143,7 +143,7 @@ watch(() => options.reverse, (val) => window._ignore = val)
     <Records :show="options.recordsMode" :data="options.personal" />
 
     <div @click="change" @touchstart="change" class="Game-Info">
-      欢迎 {{ user }} ！ <span class="version">v473/{{ options.version }}</span>
+      欢迎 {{ user }} ！ <span class="version">v474/{{ options.version }}</span>
     </div>
 
     <audio id="music" :src="BGM" autoplay="false" preload="auto"></audio>

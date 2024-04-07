@@ -37,7 +37,7 @@ const props = defineProps<{
 }
 
 .Records {
-  z-index: 1000;
+  z-index: 10000;
   position: absolute;
   padding: 1rem;
 
@@ -48,7 +48,7 @@ const props = defineProps<{
 
   color: #000;
   border-radius: 16px;
-  background-color: #eeeeee;
+  background-color: #fff;
 
   transition: .25s;
   box-sizing: border-box;

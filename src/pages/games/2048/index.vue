@@ -5,6 +5,7 @@ import VolumeOff from './volume-off.svg?raw'
 import HeadBar from './HeadBar.vue';
 import Block from './Block.vue';
 import Records from './Records.vue';
+import Settings from './Settings.vue';
 import BackFace from './BackFace.vue';
 import { Game2048, postScore } from './game'
 import BGM from './BGM.mp3'
@@ -16,6 +17,16 @@ defineOptions({
 const _change = ref(0)
 const tracks = ref<any>([])
 const game = new Game2048()
+
+const gameSettings = game.gameSettings
+
+if (localStorage.getItem("gameSettings")) {
+  Object.assign(gameSettings, JSON.parse(localStorage.getItem("gameSettings")!))
+}
+
+watch(gameSettings, (newVal) => {
+  localStorage.setItem("gameSettings", JSON.stringify(newVal))
+})
 
 const options = reactive({
   mute: false,
@@ -33,8 +44,12 @@ const options = reactive({
 const user = window.$name
 
 function transparencyToggle() {
-  if (historyHighest.value <= 5000) {
-    alert('很抱歉，您需要达到 5,000 分才可以启用战绩欣赏模式！')
+  // if (historyHighest.value <= 5000) {
+  //   alert('很抱歉，您需要达到 5,000 分才可以启用战绩欣赏模式！')
+  //   return
+  // }
+  if (historyHighest.value <= 1000) {
+    alert('很抱歉，您需要达到 3,000 分才可以进行游戏设置！')
     return
   }
   options.recordsMode = !options.recordsMode
@@ -118,20 +133,12 @@ getStatus()
 // @ts-ignore force exist
 watch(() => options.error || options.reverse, (val) => window._ignore = val)
 
-watch(() => options.mute, val => {
-  const music = document.getElementById('music') as HTMLAudioElement
-  if (val) music?.pause?.()
-  else music?.play?.()
-})
+// watch(() => options.mute, val => {
+//   const music = document.getElementById('music') as HTMLAudioElement
+//   if (val) music?.pause?.()
+//   else music?.play?.()
+// })
 
-// 监听用户是否离开页面
-document.addEventListener('visibilitychange', () => {
-  if (options.mute) return
-
-  const music = document.getElementById('music') as HTMLAudioElement
-  if (document.visibilityState === 'hidden') music?.pause?.()
-  else music?.play?.()
-})
 </script>
 
 <template>
@@ -157,29 +164,30 @@ document.addEventListener('visibilitychange', () => {
     <div class="ToggleButtons">
       <span @touchstart.prevent="options.reverse = !options.reverse"
         @click="options.reverse = !options.reverse">查看排行</span>
-      <span @touchstart.prevent="transparencyToggle" @click="transparencyToggle">战绩欣赏</span>
+      <span @touchstart.prevent="transparencyToggle" @click="transparencyToggle">游戏设置</span>
     </div>
 
-    <Records :show="options.recordsMode" :data="options.personal" />
+    <!-- <Records :show="options.recordsMode" :data="options.personal" /> -->
+    <Settings :show="options.recordsMode" :data="gameSettings" />
 
     <div @click="change" @touchstart="change" class="Game-Info">
-      欢迎 {{ user }} ！ <span class="version">v477/{{ options.version }}</span>
+      欢迎 {{ user }} ！ <span class="version">v478/{{ options.version }}</span>
     </div>
 
-    <div @touchstart="options.mute = !options.mute" @click="options.mute = !options.mute" class="mute">
+    <!-- <div @touchstart="options.mute = !options.mute" @click="options.mute = !options.mute" class="mute">
       <span v-html="options.mute ? VolumeOff : VolumeOn" />
-    </div>
-
+    </div> -->
     <audio id="music" :src="BGM" autoplay="false" preload="auto"></audio>
+
   </div>
 </template>
 
 <style>
-.mute {
+/* .mute {
   zoom: .75;
   position: absolute;
   margin: .75rem;
-}
+} */
 
 .version {
   opacity: .5;

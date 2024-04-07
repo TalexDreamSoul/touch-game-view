@@ -23,7 +23,13 @@ export class Game2048 {
   name: string | null = null
   onlinePlayers: string[]
   personal: any
-
+  gameSettings = reactive({
+    mute: {
+      bgm: false,
+      sound: false,
+    },
+    color: "shinning"
+  })
   directions = {
     'up': (i: number, j: number) => [i + 1, j],
     'down': (i: number, j: number) => [i - 1, j],
@@ -251,8 +257,23 @@ export class Game2048 {
 
     // 30%的概率生成 4
 
-    this.map[obj.x][obj.y] =
-      Math.random() < 0.3 ? 4 : 2
+    // 分数达到 10000 分，加大难度
+    if (this.state.score >= 30000) {
+      this.map[obj.x][obj.y] =
+        Math.random() <= 0.05 ? 4 : 2
+
+    } else if (this.state.score >= 10000) {
+      this.map[obj.x][obj.y] =
+        Math.random() <= 0.2 ? 4 : 2
+
+    } else if (this.state.score >= 10000) {
+      this.map[obj.x][obj.y] =
+        Math.random() <= 0.2 ? 4 : 2
+
+    } else {
+      this.map[obj.x][obj.y] =
+        Math.random() <= 0.3 ? 4 : 2
+    }
 
     this.updateUserOnlineStatus()
 
@@ -265,6 +286,7 @@ export class Game2048 {
 
   playBoom() {
     // 播放 BoomMp3
+    if (this.gameSettings.mute.sound) return
     const audio = new Audio(BoomMp3)
     audio.play()
   }

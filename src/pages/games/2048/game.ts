@@ -258,15 +258,21 @@ export class Game2048 {
     // 30%的概率生成 4
 
     // 分数达到 10000 分，加大难度
-    if (this.state.score >= 30000) {
+    if (this.state.score >= 10000) {
       this.map[obj.x][obj.y] =
         Math.random() <= 0.05 ? 4 : 2
 
-    } else if (this.state.score >= 10000) {
+      if (Math.random() <= 0.05 || Math.random() >= 0.095) {
+        // 随机生成0或1
+        const random = Math.round(Math.random())
+        this.exchange(random, Math.random() >= 0.5)
+      }
+
+    } else if (this.state.score >= 5000) {
       this.map[obj.x][obj.y] =
         Math.random() <= 0.2 ? 4 : 2
 
-    } else if (this.state.score >= 10000) {
+    } else if (this.state.score >= 3000) {
       this.map[obj.x][obj.y] =
         Math.random() <= 0.2 ? 4 : 2
 
@@ -279,6 +285,42 @@ export class Game2048 {
 
     if (tracks?.length) {
       this.playBoom()
+    }
+
+    return tracks
+  }
+
+  exchange(index: number, horizontal: boolean) {
+    const tracks = new Array<Track>()
+
+    const rows = this.map.length
+    const cols = this.map[0].length
+
+    // 交换纵向 index 和 cols - index
+    if (horizontal) {
+      for (let i = 0; i < rows; ++i) {
+        const temp = this.map[i][index]
+        this.map[i][index] = this.map[i][cols - index - 1]
+        this.map[i][cols - index - 1] = temp
+
+        // for 每一项添加运动轨迹
+        tracks.push({
+          to: [cols - index - 1, i],
+          from: [index, i]
+        })
+      }
+    } else {
+      for (let j = 0; j < cols; ++j) {
+        const temp = this.map[index][j]
+        this.map[index][j] = this.map[rows - index - 1][j]
+        this.map[rows - index - 1][j] = temp
+
+        // for 每一项添加运动轨迹
+        tracks.push({
+          to: [j, rows - index - 1],
+          from: [j, index]
+        })
+      }
     }
 
     return tracks

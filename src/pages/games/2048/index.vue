@@ -68,7 +68,7 @@ game.listen((_tracks: any) => {
   const music = document.getElementById('music') as HTMLAudioElement
   if (options.state.status === 'end') {
     // options.state.status = 'pending'
-    postScore(user.name, options.state.score)
+    postScore(user.value, options.state.score)
 
     // 清空缓存
     localStorage.removeItem('__map');
@@ -81,10 +81,10 @@ game.listen((_tracks: any) => {
 
 })
 
-setTimeout(() => game.start(user.value), 200)
+setTimeout(() => game.start(user), 200)
 
 function restart() {
-  game.start(user.value)
+  game.start(user)
 }
 
 function change() {
@@ -170,7 +170,7 @@ watch(() => options.error || options.reverse, (val) => window._ignore = val)
     <Settings :show="options.recordsMode" :data="gameSettings" />
 
     <div @click="change" @touchstart="change" class="Game-Info">
-      欢迎 {{ user }} ！ <span class="version">v482/{{ options.version }}</span>
+      欢迎 {{ user }} ！ <span class="version">v483/{{ options.version }}</span>
     </div>
 
     <!-- <div @touchstart="options.mute = !options.mute" @click="options.mute = !options.mute" class="mute">

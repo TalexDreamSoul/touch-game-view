@@ -20,7 +20,7 @@ export class Game2048 {
   map: Array<Array<number>>
   state: GameState
   rankings: any
-  name: string | null = null
+  name: any
   onlinePlayers: string[]
   personal: any
   gameSettings = reactive({
@@ -112,8 +112,8 @@ export class Game2048 {
     if (new Date().getTime() - this.lastUpdate < 1000 * 15) return
     this.lastUpdate = new Date().getTime()
 
-    updateOnlineStatus(this.name!)
-    getUserStatus(this.name!, (res: any) => this.personal.value = res)
+    updateOnlineStatus(this.name.value!)
+    getUserStatus(this.name.value!, (res: any) => this.personal.value = res)
     getOnline((res: any) => {
       Object.assign(this.onlinePlayers, res.online_users)
     })

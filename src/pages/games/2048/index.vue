@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
+import VolumeOn from './volume-on.svg?raw'
+import VolumeOff from './volume-off.svg?raw'
 import HeadBar from './HeadBar.vue';
 import Block from './Block.vue';
 import Records from './Records.vue';
@@ -16,10 +18,11 @@ const tracks = ref<any>([])
 const game = new Game2048()
 
 const options = reactive({
-  recordsMode: false,
+  mute: false,
   reverse: false,
   error: false,
   version: "",
+  recordsMode: false,
   personal: game.personal,
   online: game.onlinePlayers,
   state: game.state,
@@ -57,7 +60,9 @@ game.listen((_tracks: any) => {
     localStorage.removeItem('__state');
 
     music?.pause?.()
-  } else music?.play?.()
+
+    setTimeout(() => game.playFailed(), 200)
+  } else if (!options.mute) music?.play?.()
 
 })
 
@@ -111,10 +116,18 @@ function reconnect() {
 getStatus()
 
 // @ts-ignore force exist
-watch(() => options.reverse, (val) => window._ignore = val)
+watch(() => options.error || options.reverse, (val) => window._ignore = val)
+
+watch(() => options.mute, val => {
+  const music = document.getElementById('music') as HTMLAudioElement
+  if (val) music?.pause?.()
+  else music?.play?.()
+})
 
 // 监听用户是否离开页面
 document.addEventListener('visibilitychange', () => {
+  if (options.mute) return
+
   const music = document.getElementById('music') as HTMLAudioElement
   if (document.visibilityState === 'hidden') music?.pause?.()
   else music?.play?.()
@@ -150,7 +163,11 @@ document.addEventListener('visibilitychange', () => {
     <Records :show="options.recordsMode" :data="options.personal" />
 
     <div @click="change" @touchstart="change" class="Game-Info">
-      欢迎 {{ user }} ！ <span class="version">v475/{{ options.version }}</span>
+      欢迎 {{ user }} ！ <span class="version">v476/{{ options.version }}</span>
+    </div>
+
+    <div @touchstart="options.mute = !options.mute" @click="options.mute = !options.mute" class="mute">
+      <span v-html="options.mute ? VolumeOff : VolumeOn" />
     </div>
 
     <audio id="music" :src="BGM" autoplay="false" preload="auto"></audio>
@@ -158,6 +175,12 @@ document.addEventListener('visibilitychange', () => {
 </template>
 
 <style>
+.mute {
+  zoom: .75;
+  position: absolute;
+  margin: .75rem;
+}
+
 .version {
   opacity: .5;
   font-size: 0.8rem;

@@ -1,4 +1,6 @@
 import { reactive } from 'vue'
+import BoomMp3 from './boom.mp3'
+import Failed from './FAIELD.mp3'
 
 export type Direction = "up" | "down" | "left" | "right"
 
@@ -252,7 +254,22 @@ export class Game2048 {
 
     this.updateUserOnlineStatus()
 
+    if (tracks?.length) {
+      this.playBoom()
+    }
+
     return tracks
+  }
+
+  playBoom() {
+    // 播放 BoomMp3
+    const audio = new Audio(BoomMp3)
+    audio.play()
+  }
+
+  playFailed() {
+    const audio = new Audio(Failed)
+    audio.play()
   }
 
   listenTouch(callback: Function) {

@@ -69,6 +69,11 @@ watchEffect(() => {
 
       console.log('数据上传完毕！')
     }
+
+    // 获取 music audio 播放
+    const music = document.getElementById('music') as HTMLAudioElement
+    if (status.value === 'end') music.pause()
+    else music.play()
   })
 
   setTimeout(() => game.start(), 200)
@@ -192,7 +197,7 @@ watch(() => reverse.value, (val) => window._ignore = val)
       欢迎 {{ user }} ！ <span class="version">v471/{{ options.version }}</span>
     </div>
 
-    <audio :src="BGM" autoplay preload="auto"></audio>
+    <audio id="music" :src="BGM" autoplay="false" preload="auto"></audio>
   </div>
 </template>
 

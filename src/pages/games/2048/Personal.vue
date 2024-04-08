@@ -57,6 +57,21 @@ function genSingleTasks(scores: number[]) {
   })
 }
 
+function genAverageScoreTasks(scores: number[]) {
+  [...scores].forEach(num => {
+    tasks.value.push({
+      per: () => {
+        if (average.value >= num) return 100
+
+        else return Math.floor((average.value / num) * 100)
+      },
+      text: `平均得分达到 ${format(num)} 分`
+    })
+  })
+}
+
+genAverageScoreTasks([1000, 3000, 5000, 10000, 30000, 50000, 100000])
+
 const computedTasks = computed(() => {
   const _tasks = tasks.value.map((item: any) => {
     return {

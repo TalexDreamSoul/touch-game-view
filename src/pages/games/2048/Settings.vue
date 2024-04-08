@@ -7,6 +7,18 @@ const props = defineProps<{
   data: any,
   options: any,
 }>()
+const emits = defineEmits<{
+  (e: 'update:show', val: boolean): void
+}>();
+
+const display = computed({
+  get() {
+    return props.show
+  },
+  set(val) {
+    emits('update:show', val)
+  }
+})
 
 // 监听用户是否离开页面
 document.addEventListener('visibilitychange', () => {
@@ -19,8 +31,6 @@ document.addEventListener('visibilitychange', () => {
 
 watch(() => props.data.mute.bgm, (val) => {
   nextTick(() => {
-    console.log("mute", val)
-
     if (!val) {
       const music = document.getElementById('music') as HTMLAudioElement
       music?.play?.()
@@ -32,11 +42,97 @@ watch(() => props.data.mute.bgm, (val) => {
     }
   })
 }, { immediate: true })
+
+// 允许触控下拉Floater关闭页面
+interface Options {
+  thresholdDistance: number; // 触发关闭的阈值距离
+  elasticity: number; // 弹性系数
+}
+
+function listen(el: HTMLElement, options: Options) {
+  let isDragging = false;
+  let startY = 0;
+  let currentY = 0;
+  let lastY = 0;
+
+  const { thresholdDistance, elasticity } = options;
+
+  el.addEventListener('touchstart', (event: TouchEvent) => {
+    isDragging = true;
+    startY = event.touches[0].clientY;
+    lastY = startY;
+    currentY = startY;
+  });
+
+  el.addEventListener('touchmove', (event: TouchEvent) => {
+    if (!isDragging) return;
+
+    currentY = event.touches[0].clientY;
+
+    const deltaY = currentY - lastY;
+
+    // 实现下拉移动
+    el.parentElement!.style.transform = `translateY(100%) scaleY(.8) translateY(${currentY}px)`;
+
+    lastY = currentY;
+
+    // 如果下拉超过阈值距离，则彻底关闭
+    if (currentY - startY >= thresholdDistance) {
+      el.parentElement!.style.transform = ''; // 移动到底部
+      display.value = false
+      isDragging = false;
+      console.log('弹出框已彻底关闭');
+    }
+  });
+
+  el.addEventListener('touchend', () => {
+    if (!isDragging) return;
+
+    const deltaY = currentY - startY;
+
+    // 使用弹性使弹出框有回弹效果
+    const targetY = deltaY > 0 ? 0 : currentY + deltaY * elasticity;
+
+    el.parentElement!.style.transition = 'transform 0.3s ease';
+    el.parentElement!.style.transform = `translateY(100%) scaleY(.8) translateY(${targetY}px)`;
+
+    // 清除监听器
+    setTimeout(() => {
+      el.parentElement!.style.transition = '';
+      isDragging = false;
+    }, 300);
+  });
+
+  el.addEventListener('touchcancel', () => {
+    if (!isDragging) return;
+
+    // 取消拖动时，恢复初始状态
+    el.parentElement!.style.transition = 'transform 0.3s ease';
+    el.parentElement!.style.transform = `translateY(100%) scaleY(.8) translateY(0)`;
+
+    // 清除监听器
+    setTimeout(() => {
+      el.parentElement!.style.transition = '';
+      isDragging = false;
+    }, 300);
+  });
+}
+
+const options: Options = {
+  thresholdDistance: 300, // 设置阈值距离为100px
+  elasticity: 0.5, // 设置弹性系数为0.5
+};
+
+onMounted(() => {
+  const el = document.getElementById('SettingFloater') as HTMLElement
+
+  listen(el, options)
+})
 </script>
 
 <template>
-  <div class="Settings" :class="{ show }">
-    <div class="Floater">
+  <div class="Settings" :class="{ show: display }">
+    <div id="SettingFloater" class="Floater">
       <span />
     </div>
 
@@ -79,6 +175,12 @@ watch(() => props.data.mute.bgm, (val) => {
   backdrop-filter: blur(18px) saturate(180%);
 }
 
+.Floater:hover span {
+  width: 6rem;
+
+  background-color: #161616E0;
+}
+
 .Floater span {
   position: absolute;
 
@@ -88,9 +190,11 @@ watch(() => props.data.mute.bgm, (val) => {
   width: 4rem;
   height: .5rem;
 
+  cursor: pointer;
   border-radius: 8px;
   background-color: #161616A0;
 
+  transition:cubic-bezier(0.55, 0.085, 0.68, 0.53) .25s;
   transform: translate(-50%, -50%);
 }
 

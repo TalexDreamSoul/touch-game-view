@@ -176,7 +176,7 @@ watch(() => options.recordsMode || options.error || options.reverse, (val) => wi
     <Settings :options="options.personal" v-model:show="options.recordsMode" :data="gameSettings" />
 
     <div @click="change" @touchstart="change" class="Game-Info">
-      欢迎 {{ user }} ！ <span class="version">v488/{{ options.version }}</span>
+      欢迎 {{ user }} ！ <span class="version">v489/{{ options.version }}</span>
     </div>
 
     <!-- <div @touchstart="options.mute = !options.mute" @click="options.mute = !options.mute" class="mute">

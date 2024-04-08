@@ -47,86 +47,96 @@ watch(() => props.data.mute.bgm, (val) => {
 interface Options {
   thresholdDistance: number; // 触发关闭的阈值距离
   elasticity: number; // 弹性系数
+  elasticityClose: number; // 触发关闭的阈值力度
 }
 
 function listen(el: HTMLElement, options: Options) {
-  let isDragging = false;
-  let startY = 0;
-  let currentY = 0;
-  let lastY = 0;
+  const parentEl = el.parentElement! as HTMLElement
+  const { thresholdDistance, elasticity, elasticityClose } = options
 
-  const { thresholdDistance, elasticity } = options;
+  const _options = {
+    touch: false,
+    lastY: -1,
+    startY: -1,
+  }
 
-  el.addEventListener('touchstart', (event: TouchEvent) => {
-    isDragging = true;
-    startY = event.touches[0].clientY;
-    lastY = startY;
-    currentY = startY;
-  });
+  parentEl.addEventListener('touchstart', (e) => {
+    // 如果触控点不止一个不触发
+    if (e.touches.length !== 1) return
 
-  el.addEventListener('touchmove', (event: TouchEvent) => {
-    if (!isDragging) return;
+    _options.startY = _options.lastY = e.touches[0].clientY
 
-    currentY = event.touches[0].clientY;
+    _options.touch = true
 
-    const deltaY = currentY - lastY;
+    parentEl.style.transition = 'none'
+  })
 
-    // 实现下拉移动
-    el.parentElement!.style.transform = `translateY(100%) scaleY(.8) translateY(${currentY}px)`;
+  parentEl.addEventListener('touchend', (e) => {
+    _options.touch = false
 
-    lastY = currentY;
+    parentEl.style.transition = ''
 
-    // 如果下拉超过阈值距离，则彻底关闭
-    if (currentY - startY >= thresholdDistance) {
-      el.parentElement!.style.transform = ''; // 移动到底部
-      display.value = false
-      isDragging = false;
-      console.log('弹出框已彻底关闭');
+    if (display.value) {
+      // 根据弹性系数计算回弹距离
+      const diff = _options.lastY - _options.startY
+      const elasticDistance = diff * elasticity
+
+      // console.log("end", elasticDistance)
+
+      if (elasticDistance > elasticityClose) {
+        parentEl.style.transform = ''
+
+        display.value = false
+        return
+      }
+
+      parentEl.style.transform = `translateY(0) scaleY(1) translateY(-${elasticDistance}px)`
+
+      setTimeout(() => {
+        parentEl.style.transform = `translateY(0) scaleY(1) translateY(0px)`
+      }, 200)
     }
-  });
+  })
 
-  el.addEventListener('touchend', () => {
-    if (!isDragging) return;
+  const scaleRange = [1, 0.85]
 
-    const deltaY = currentY - startY;
+  parentEl.addEventListener('touchmove', (e) => {
+    const touch = e.touches[0]
 
-    // 使用弹性使弹出框有回弹效果
-    const targetY = deltaY > 0 ? 0 : currentY + deltaY * elasticity;
+    const { clientY } = touch
+    // const diff = clientY - _options.lastY
+    _options.lastY = clientY
 
-    el.parentElement!.style.transition = 'transform 0.3s ease';
-    el.parentElement!.style.transform = `translateY(100%) scaleY(.8) translateY(${targetY}px)`;
+    const totalDiff = clientY - _options.startY
+    if (totalDiff < 0) return
+    if (totalDiff >= thresholdDistance) {
+      parentEl.style.transform = ''
 
-    // 清除监听器
-    setTimeout(() => {
-      el.parentElement!.style.transition = '';
-      isDragging = false;
-    }, 300);
-  });
+      display.value = false
 
-  el.addEventListener('touchcancel', () => {
-    if (!isDragging) return;
+      return
+    }
 
-    // 取消拖动时，恢复初始状态
-    el.parentElement!.style.transition = 'transform 0.3s ease';
-    el.parentElement!.style.transform = `translateY(100%) scaleY(.8) translateY(0)`;
+    // 将 0 - totalDiff 映射到 scaleRange
+    const scale = (totalDiff / thresholdDistance) * (scaleRange[1] - scaleRange[0]) + scaleRange[0]
 
-    // 清除监听器
-    setTimeout(() => {
-      el.parentElement!.style.transition = '';
-      isDragging = false;
-    }, 300);
-  });
+    display.value = true
+    parentEl.style.transform = `translateY(0) scaleY(${scale}) translateY(${totalDiff}px)`
+
+    // console.log("totalDiff", totalDiff, scale)
+  })
 }
 
-const options: Options = {
-  thresholdDistance: 300, // 设置阈值距离为100px
-  elasticity: 0.5, // 设置弹性系数为0.5
+const _options: Options = {
+  thresholdDistance: window.innerHeight * 0.9, // 设置阈值距离为100px
+  elasticity: 0.15, // 设置弹性系数为0.5
+  elasticityClose: 30, // 设置弹性系数为0.5
 };
 
 onMounted(() => {
   const el = document.getElementById('SettingFloater') as HTMLElement
 
-  listen(el, options)
+  listen(el, _options)
 })
 </script>
 
@@ -194,19 +204,19 @@ onMounted(() => {
   border-radius: 8px;
   background-color: #161616A0;
 
-  transition:cubic-bezier(0.55, 0.085, 0.68, 0.53) .25s;
+  transition: cubic-bezier(0.55, 0.085, 0.68, 0.53) .25s;
   transform: translate(-50%, -50%);
 }
 
 .Settings {
   z-index: 10000;
   position: absolute;
-  padding: 0;
+  padding: 0 0 5rem 0;
 
   width: 100%;
-  height: 90%;
+  height: calc(90% + 5rem);
 
-  bottom: 0;
+  bottom: -5rem;
 
   color: #000;
   border-radius: 16px 16px 0 0;

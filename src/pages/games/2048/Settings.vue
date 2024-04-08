@@ -74,6 +74,8 @@ function listen(el: HTMLElement, options: Options) {
   })
 
   parentEl.addEventListener('touchend', (e) => {
+    if (!_options.touch) return
+
     _options.touch = false
 
     parentEl.style.transition = ''
@@ -105,7 +107,7 @@ function listen(el: HTMLElement, options: Options) {
   const scaleRange = [1, 0.85]
 
   parentEl.addEventListener('touchmove', (e) => {
-    // if (!_options.touch) return
+    if (!_options.touch) return
 
     const touch = e.touches[0]
 
@@ -191,7 +193,8 @@ onMounted(() => {
   backdrop-filter: blur(18px) saturate(180%);
 }
 
-.Floater:active span, .Floater.active span {
+.Floater:active span,
+.Floater.active span {
   width: 6rem;
 
   background-color: #161616E0;

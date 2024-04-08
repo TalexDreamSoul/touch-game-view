@@ -146,7 +146,8 @@ onBeforeUnmount(() => end = true)
   overflow: hidden;
 }
 
-.Game.records .Game-Bar {
+.Game.records .Game-Bar,
+.Game.records .Game-SubBar {
   opacity: 0;
 }
 </style>

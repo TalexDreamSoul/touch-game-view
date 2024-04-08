@@ -24,11 +24,11 @@ const purchases = ref(["撤销道具", "复活道具", "屏蔽交换道具"])
 // 4-5 需要 50000
 // 5-6 需要 80000
 // 6-7 需要 100000
-// 总结一个公式：
-// 10000 * 2 ^ (等级 - 1)
+// 现在根据分数倒推等级
+// LEVEL = Math.floor(Math.log2(totalScores.value / 10000))
 const level = computed(() => {
-  const level = Math.floor(totalScores.value / 10000)
-  const total = 10000 * Math.pow(2, level)
+  const level = Math.floor(Math.log2(totalScores.value / 1000))
+  const total = 10000 * Math.pow(2, level + 1)
   const percent = Math.floor((totalScores.value / total) * 100)
   return [level, total, percent]
 })
@@ -58,7 +58,7 @@ function format(val: any) {
           </div>
         </div>
         <div v-if="level?.length === 3" class="level">
-          <span style="width: 120px">等级{{ level[0] }}</span>
+          <span style="width: 150px">等级{{ level[0] }}</span>
           <span class="level-progress" :style="`--p: ${level[2]}%`">
             <span class="color">{{ level[2] }}%</span>
           </span>

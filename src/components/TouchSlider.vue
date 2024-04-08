@@ -20,7 +20,7 @@ const value = computed({
 </script>
 
 <template>
-  <div :class="{ active: !reversed ? value : !value }" @click="value = !value" @touchstart="value = !value" class="TouchSlider">
+  <div :class="{ active: !reversed ? value : !value }" @click="value = !value" class="TouchSlider">
     <span class="title">{{ title }}</span>
 
     <span class="button" />
@@ -29,6 +29,7 @@ const value = computed({
 
 <style>
 .TouchSlider {
+  padding: .25rem 0;
   display: flex;
 
   align-items: center;

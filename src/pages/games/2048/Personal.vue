@@ -48,7 +48,7 @@ function genSingleTasks(scores: number[]) {
   [...scores].forEach(num => {
     tasks.value.push({
       per: () => {
-        if (props.options.cumulative_score >= num) return 100
+        if (props.options.score >= num) return 100
 
         else return Math.floor((props.options.cumulative_score / num) * 100)
       },

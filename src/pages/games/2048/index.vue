@@ -133,7 +133,7 @@ function reconnect() {
 getStatus()
 
 // @ts-ignore force exist
-watch(() => options.error || options.reverse, (val) => window._ignore = val)
+watch(() => options.recordsMode || options.error || options.reverse, (val) => window._ignore = val)
 
 // watch(() => options.mute, val => {
 //   const music = document.getElementById('music') as HTMLAudioElement
@@ -176,7 +176,7 @@ watch(() => options.error || options.reverse, (val) => window._ignore = val)
     <Settings :options="options.personal" :show="options.recordsMode" :data="gameSettings" />
 
     <div @click="change" @touchstart="change" class="Game-Info">
-      欢迎 {{ user }} ！ <span class="version">v485/{{ options.version }}</span>
+      欢迎 {{ user }} ！ <span class="version">v486/{{ options.version }}</span>
     </div>
 
     <!-- <div @touchstart="options.mute = !options.mute" @click="options.mute = !options.mute" class="mute">

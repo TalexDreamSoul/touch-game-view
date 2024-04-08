@@ -3,20 +3,39 @@ const props = defineProps<{
   options: any,
 }>()
 
+const totalScores = computed(() => !props.options?.history?.length ? 0 : props.options.history.reduce((sum: any, item: any) => sum + item.score, 0))
+
 const average = computed(() => {
   // options有一个history记录战绩列表 其中每一项score代表分数 给我求平均分
-  return !props.options?.history?.length ? 0 : Math.round(props.options.history.reduce((sum, item) => sum + item.score, 0) / props.options.history.length)
+  return !props.options?.history?.length ? 0 : Math.round(totalScores.value / props.options.history.length)
 })
 
-const total = computed(() => {
-  const _score = !props.options?.history?.length ? 0 : props.options.history.reduce((sum, item) => sum + item.score, 0)
-
-  // 每 3 位加一个,
-  return _score.toString().replace(/\d{1,3}(?=(\d{3})+$)/g, '$&,')
-})
+const total = computed(() => totalScores.value.toString().replace(/\d{1,3}(?=(\d{3})+$)/g, '$&,'))
 
 const tasks = ref(["累计积分达到 100,000 分", "累计积分达到 1,000,000 分", "累计积分达到 10,000,000 分"])
 const purchases = ref(["撤销道具", "复活道具", "屏蔽交换道具"])
+
+// 设置等级升级公式
+// 传入 num 返回[等级，下一等级总共需要经验，百分比]
+// 0-1 需要 5000
+// 1-2 需要 10000
+// 2-3 需要 20000
+// 3-4 需要 30000
+// 4-5 需要 50000
+// 5-6 需要 80000
+// 6-7 需要 100000
+// 总结一个公式：
+// 10000 * 2 ^ (等级 - 1)
+const level = computed(() => {
+  const level = Math.floor(totalScores.value / 10000)
+  const total = 10000 * Math.pow(2, level)
+  const percent = Math.floor((totalScores.value / total) * 100)
+  return [level, total, percent]
+})
+
+function format(val: any) {
+  return String(val).replace(/\d{1,3}(?=(\d{3})+$)/g, '$&,')
+}
 </script>
 
 <template>
@@ -38,6 +57,13 @@ const purchases = ref(["撤销道具", "复活道具", "屏蔽交换道具"])
             <div class="value">{{ options.game_count }}场</div>
           </div>
         </div>
+        <div v-if="level?.length === 3" class="level">
+          <span style="width: 120px">等级{{ level[0] }}</span>
+          <span class="level-progress" :style="`--p: ${level[2]}%`">
+            <span class="color">{{ level[2] }}%</span>
+          </span>
+          <span>{{ format(totalScores) }}/{{ format(level[1]) }}</span>
+        </div>
       </div>
     </div>
 
@@ -54,7 +80,7 @@ const purchases = ref(["撤销道具", "复活道具", "屏蔽交换道具"])
     <div class="player-info-card">
       <div class="purchases">
         <h3>商店购买</h3>
-        <span>积分：{{ String(options.cumulative_score || 0).replace(/\d{1,3}(?=(\d{3})+$)/g, '$&,') }}</span>
+        <span>积分：{{ String(options?.cumulative_score || 0).replace(/\d{1,3}(?=(\d{3})+$)/g, '$&,') }}</span>
       </div>
       <ul>
         <li v-for="(purchase, index) in purchases" :key="index">{{ purchase }}</li>
@@ -64,6 +90,49 @@ const purchases = ref(["撤销道具", "复活道具", "屏蔽交换道具"])
 </template>
 
 <style scoped>
+.level {
+  margin-top: .75rem;
+
+  display: flex;
+
+  gap: .25rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.level span.level-progress {
+  position: relative;
+  margin: 0 .25rem;
+
+  height: 20px;
+  line-height: 20px;
+  width: 100%;
+
+  border-radius: .25rem;
+  background-color: #e6e6e6E0;
+}
+
+span.level-progress .color {
+  color: #000;
+
+  text-shadow: 0 0 4px #fff;
+  /* mix-blend-mode: difference; */
+}
+
+.level span.level-progress::before {
+  content: "";
+  position: absolute;
+
+  height: 100%;
+  width: var(--p);
+
+  left: 0;
+  top: 0;
+
+  border-radius: .25rem;
+  background-color: #16161680;
+}
+
 .purchases {
   border-bottom: 1px solid #ccc;
   margin-bottom: 20px;

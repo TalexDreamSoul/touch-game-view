@@ -52,7 +52,9 @@ function transparencyToggle() {
     alert('很抱歉，您需要达到 3,000 分才可以进行游戏设置！')
     return
   }
-  options.recordsMode = !options.recordsMode
+  options.reverse = false
+
+  setTimeout(() => options.recordsMode = !options.recordsMode, 200)
 }
 
 const historyHighest = computed(() => {
@@ -160,17 +162,21 @@ watch(() => options.error || options.reverse, (val) => window._ignore = val)
       </div>
     </div>
 
+    <!-- <div class="Tools">
+      道具
+    </div> -->
+
     <div class="ToggleButtons">
-      <span @touchstart.prevent="options.reverse = !options.reverse"
-        @click="options.reverse = !options.reverse">查看排行</span>
-      <span @touchstart.prevent="transparencyToggle" @click="transparencyToggle">游戏设置</span>
+      <span class="rank-button" @touchstart.prevent="options.reverse = !options.reverse"
+        @click="options.reverse = !options.reverse">个人信息</span>
+      <span class="setting-button" @touchstart.prevent="transparencyToggle" @click="transparencyToggle">游戏设置</span>
     </div>
 
     <!-- <Records :show="options.recordsMode" :data="options.personal" /> -->
-    <Settings :show="options.recordsMode" :data="gameSettings" />
+    <Settings :options="options.personal" :show="options.recordsMode" :data="gameSettings" />
 
     <div @click="change" @touchstart="change" class="Game-Info">
-      欢迎 {{ user }} ！ <span class="version">v484/{{ options.version }}</span>
+      欢迎 {{ user }} ！ <span class="version">v485/{{ options.version }}</span>
     </div>
 
     <!-- <div @touchstart="options.mute = !options.mute" @click="options.mute = !options.mute" class="mute">
@@ -203,17 +209,59 @@ watch(() => options.error || options.reverse, (val) => window._ignore = val)
 }
 
 .Game.records .ToggleButtons {
-  bottom: 92.5%;
+  bottom: 91.25%;
 }
 
-.ToggleButtons span {
-  padding: .25rem 1rem;
+.Tools {
+  position: absolute;
+  display: flex;
 
-  flex: 1;
-  text-align: center;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+
+  left: 50%;
+  bottom: 15%;
+
+  width: 85%;
+  height: 10%;
+
+  cursor: pointer;
+  user-select: none;
+  overflow-y: scroll;
   border-radius: 8px;
   background-color: #e6e6e680;
   backdrop-filter: blur(18px) saturate(180%);
+  transform: translate(-50%, 0);
+  z-index: 100;
+
+  overflow: hidden;
+  transition: cubic-bezier(0.445, 0.05, 0.55, 0.95) .25s;
+}
+
+.ToggleButtons span {
+  padding: .35rem 1rem;
+
+  flex: 1;
+  width: 50%;
+  text-align: center;
+  line-height: 1.5rem;
+  border-radius: 8px;
+  background-color: #e6e6e680;
+  transition: cubic-bezier(0.445, 0.05, 0.55, 0.95) .5s;
+  backdrop-filter: blur(18px) saturate(180%);
+}
+
+div.Game.records .ToggleButtons span.rank-button {
+  opacity: 0;
+  transform: translateX(-100%) scale(.8);
+  flex: 0;
+}
+
+div.Game.records .ToggleButtons span.setting-button {
+  width: 100%;
+
+  transform: translateX(-10%);
 }
 
 .ToggleButtons {
@@ -225,7 +273,7 @@ watch(() => options.error || options.reverse, (val) => window._ignore = val)
   align-items: center;
 
   left: 50%;
-  bottom: 10%;
+  bottom: 5%;
 
   width: 85%;
   height: 5%;
@@ -238,7 +286,8 @@ watch(() => options.error || options.reverse, (val) => window._ignore = val)
   transform: translate(-50%, 0);
   z-index: 100;
 
-  transition: .25s;
+  overflow: hidden;
+  transition: cubic-bezier(0.445, 0.05, 0.55, 0.95) .25s;
 }
 
 .GameWrapper.reverse {
@@ -293,7 +342,7 @@ watch(() => options.error || options.reverse, (val) => window._ignore = val)
 .Game-Info {
   z-index: 1000;
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
   width: 100%;
   height: 20px;
@@ -380,7 +429,7 @@ watch(() => options.error || options.reverse, (val) => window._ignore = val)
   position: absolute;
   display: flex;
 
-  top: 50%;
+  top: 55%;
   left: 50%;
 
   width: 22rem;
@@ -391,7 +440,7 @@ watch(() => options.error || options.reverse, (val) => window._ignore = val)
   backdrop-filter: blur(18px) saturate(180%);
   transform: translate(-50%, -50%);
 
-  transition: .25s;
+  transition: .25s cubic-bezier(.4, 0, .2, 1);
   transform-style: preserve-3d;
   perspective: 1000px;
 

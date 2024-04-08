@@ -27,6 +27,11 @@ export class Game2048 {
     mute: {
       bgm: false,
       sound: false,
+      failed: false,
+    },
+    vibrate: {
+      slide: true,
+      failed: true
     },
     color: "shinning"
   })
@@ -262,7 +267,7 @@ export class Game2048 {
     // 分数达到 10000 分，加大难度
     if (this.state.score >= 10000) {
       this.map[obj.x][obj.y] =
-        Math.random() <= 0.05 ? 4 : 2
+        Math.random() <= 0.95 ? 4 : 2
 
       if (new Date().getTime() - this._move >= 1000 * 15) {
         if (Math.random() <= 0.005 || Math.random() >= 0.095) {
@@ -276,15 +281,15 @@ export class Game2048 {
 
     } else if (this.state.score >= 5000) {
       this.map[obj.x][obj.y] =
-        Math.random() <= 0.2 ? 4 : 2
+        Math.random() <= 0.75 ? 4 : 2
 
     } else if (this.state.score >= 3000) {
       this.map[obj.x][obj.y] =
-        Math.random() <= 0.2 ? 4 : 2
+        Math.random() <= 0.5 ? 4 : 2
 
     } else {
       this.map[obj.x][obj.y] =
-        Math.random() <= 0.3 ? 4 : 2
+        Math.random() <= 0.25 ? 4 : 2
     }
 
     this.updateUserOnlineStatus()
@@ -340,8 +345,15 @@ export class Game2048 {
   }
 
   playFailed() {
-    const audio = new Audio(Failed)
-    audio.play()
+    if (!this.gameSettings.mute.failed) {
+      const audio = new Audio(Failed)
+      audio.play()
+    }
+
+    if (this.gameSettings.vibrate.failed)
+      window.navigator.vibrate([
+        100, 30, 100, 30, 100, 200, 200, 30, 200, 30, 200, 200, 100, 30, 100, 30, 100,
+      ]);
   }
 
   listenTouch(callback: Function) {

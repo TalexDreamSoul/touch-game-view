@@ -17,10 +17,10 @@ const topIndex = computed(() => {
 
 const broadcastIndex = ref(0)
 const broadcasts = ref([
-  () => `当前有${props.online.length || 1} 个玩家正在游戏...`,
-  () => `全新交换模式，单局 1,000 分自动解锁`, ,
+  () => `当前有 ${props.online.length || 1} 个玩家正在游戏...`,
+  () => `全新交换模式，单局 10,000 分自动解锁`, ,
   () => `4.14 12:00 前第一名可领取奖励`,
-  () => `交换模式 15s 内只会触发一次`
+  () => `交换模式 5s 内只会触发一次`
 ])
 
 const broadcast = computed(() =>
@@ -107,7 +107,7 @@ onBeforeUnmount(() => end = true)
   align-items: center;
 
   left: 50%;
-  top: 20%;
+  top: 25%;
 
   width: 24rem;
   height: 4rem;
@@ -131,7 +131,7 @@ onBeforeUnmount(() => end = true)
   align-items: center;
 
   left: 50%;
-  top: 10%;
+  top: 15%;
 
   width: 24rem;
   height: 4rem;

@@ -29,6 +29,8 @@ watch(gameSettings, (newVal) => {
 })
 
 const options = reactive({
+  nonLatest: false,
+  latest: "4811",
   mute: false,
   reverse: false,
   error: false,
@@ -118,6 +120,7 @@ function getStatus() {
     .then(data => {
       options.version = data?.version
       options.error = !data?.status
+      options.nonLatest = data?.latest > options.latest
     })
     .catch(err => {
       options.error = true
@@ -176,7 +179,7 @@ watch(() => options.recordsMode || options.error || options.reverse, (val) => wi
     <Settings :options="options.personal" v-model:show="options.recordsMode" :data="gameSettings" />
 
     <div @click="change" @touchstart="change" class="Game-Info">
-      欢迎 {{ user }} ！ <span class="version">v4810/{{ options.version }}</span>
+      欢迎 {{ user }} ！ <span class="version">v{{ options.latest }}/{{ options.version }}</span>
     </div>
 
     <!-- <div @touchstart="options.mute = !options.mute" @click="options.mute = !options.mute" class="mute">
@@ -184,10 +187,45 @@ watch(() => options.recordsMode || options.error || options.reverse, (val) => wi
     </div> -->
     <audio id="music" :src="BGM" autoplay="false" preload="auto"></audio>
 
+    <div v-if="options.nonLatest" class="non-latest">您的页面不是最新版本，刷新多次后更新！</div>
   </div>
 </template>
 
 <style>
+.non-latest {
+  position: absolute;
+  padding: .125rem .5rem;
+
+  left: 50%;
+  bottom: 15%;
+
+  width: max-content;
+
+  text-align: center;
+  border-radius: 8px;
+  background-color: #ffffff50;
+  backdrop-filter: blur(18px) saturate(180%);
+  animation: shinning cubic-bezier(0.6, -0.28, 0.735, 0.045) 1.5s infinite;
+  transform: translate(-50%, 0);
+  transition: .25s;
+}
+
+.Game.records .non-latest {
+  transform: translate(-50%, 0) scale(0);
+}
+
+@keyframes shinning {
+
+  0%,
+  100% {
+    opacity: .25;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
 /* .mute {
   zoom: .75;
   position: absolute;

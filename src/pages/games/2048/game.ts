@@ -162,6 +162,8 @@ export class Game2048 {
 
   }
 
+  _move: any = -1
+
   move(direction: Direction) {
     const rows = this.map.length
     const cols = this.map[0].length
@@ -262,10 +264,14 @@ export class Game2048 {
       this.map[obj.x][obj.y] =
         Math.random() <= 0.05 ? 4 : 2
 
-      if (Math.random() <= 0.05 || Math.random() >= 0.095) {
-        // 随机生成0或1
-        const random = Math.round(Math.random())
-        this.exchange(random, Math.random() >= 0.5)
+      if (new Date().getTime() - this._move >= 1000 * 15) {
+        if (Math.random() <= 0.005 || Math.random() >= 0.095) {
+          this._move = new Date().getTime()
+
+          // 随机生成0或1
+          const random = Math.round(Math.random())
+          this.exchange(random, Math.random() >= 0.5)
+        }
       }
 
     } else if (this.state.score >= 5000) {

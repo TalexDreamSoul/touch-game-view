@@ -64,6 +64,8 @@ function listen(el: HTMLElement, options: Options) {
     // 如果触控点不止一个不触发
     if (e.touches.length !== 1) return
 
+    el.classList.add('active')
+
     _options.startY = _options.lastY = e.touches[0].clientY
 
     _options.touch = true
@@ -75,6 +77,8 @@ function listen(el: HTMLElement, options: Options) {
     _options.touch = false
 
     parentEl.style.transition = ''
+
+    el.classList.remove('active')
 
     if (display.value) {
       // 根据弹性系数计算回弹距离
@@ -185,7 +189,7 @@ onMounted(() => {
   backdrop-filter: blur(18px) saturate(180%);
 }
 
-.Floater:hover span {
+.Floater:active span, .Floater.active span {
   width: 6rem;
 
   background-color: #161616E0;

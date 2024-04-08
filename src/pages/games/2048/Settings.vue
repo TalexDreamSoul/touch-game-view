@@ -60,7 +60,7 @@ function listen(el: HTMLElement, options: Options) {
     startY: -1,
   }
 
-  parentEl.addEventListener('touchstart', (e) => {
+  el.addEventListener('touchstart', (e) => {
     // 如果触控点不止一个不触发
     if (e.touches.length !== 1) return
 
@@ -105,6 +105,8 @@ function listen(el: HTMLElement, options: Options) {
   const scaleRange = [1, 0.85]
 
   parentEl.addEventListener('touchmove', (e) => {
+    if (!_options.touch) return
+
     const touch = e.touches[0]
 
     const { clientY } = touch

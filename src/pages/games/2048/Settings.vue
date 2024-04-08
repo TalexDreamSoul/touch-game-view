@@ -105,7 +105,7 @@ function listen(el: HTMLElement, options: Options) {
   const scaleRange = [1, 0.85]
 
   parentEl.addEventListener('touchmove', (e) => {
-    if (!_options.touch) return
+    // if (!_options.touch) return
 
     const touch = e.touches[0]
 

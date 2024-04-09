@@ -17,7 +17,7 @@ if (computedTasks.value.length === 0)
         <div class="stats">
           <div class="stat">
             <div class="label">累计得分:</div>
-            <div class="value">{{ total }}分</div>
+            <div class="value">{{ totalScores }}分</div>
           </div>
           <div class="stat">
             <div class="label">平均得分:</div>

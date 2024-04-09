@@ -12,8 +12,8 @@ export function useUserData(userData: any) {
   }, { immediate: true, deep: true })
 
   const level = computed(() => {
-    const level = Math.floor(Math.log2(totalScores.value / 800))
-    const total = 800 * Math.pow(2, level + 1)
+    const level = Math.floor(Math.log2(totalScores.value / 400))
+    const total = 400 * Math.pow(2, level + 1)
     const percent = Math.floor((totalScores.value / total) * 100)
     return [level, total, percent]
   })

@@ -284,7 +284,7 @@ export class Game2048 {
     // 30%的概率生成 4
 
     // 分数达到 10000 分，加大难度
-    if (this.state.score >= 10000) {
+    if (this.state.score >= 15000) {
       this.map[obj.x][obj.y] =
         Math.random() <= 0.95 ? 4 : 2
 
@@ -298,11 +298,11 @@ export class Game2048 {
         }
       }
 
-    } else if (this.state.score >= 5000) {
+    } else if (this.state.score >= 10000) {
       this.map[obj.x][obj.y] =
         Math.random() <= 0.75 ? 4 : 2
 
-    } else if (this.state.score >= 3000) {
+    } else if (this.state.score >= 5000) {
       this.map[obj.x][obj.y] =
         Math.random() <= 0.5 ? 4 : 2
 

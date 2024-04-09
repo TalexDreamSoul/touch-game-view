@@ -50,7 +50,7 @@ function genSingleTasks(scores: number[]) {
       per: () => {
         if (props.options.score >= num) return 100
 
-        else return Math.floor((props.options.cumulative_score / num) * 100)
+        else return Math.floor((props.options.score / num) * 100)
       },
       text: `单局积分达到 ${format(num)} 分`
     })
@@ -90,7 +90,7 @@ const computedTasks = computed(() => {
 
 genSingleTasks([1000, 3000, 5000, 8000, 10000, 15000, 20000, 25000, 30000, 35000, 40000, 50000, 80000, 100000])
 
-const purchases = ref(["撤销道具", "复活道具", "屏蔽交换道具"])
+const purchases = ref(["抽奖箱", "撤销道具", "复活道具", "屏蔽交换道具"])
 
 // 设置等级升级公式
 // 传入 num 返回[等级，下一等级总共需要经验，百分比]

@@ -7,6 +7,7 @@ import BackFace from './BackFace.vue';
 import { Game2048, postScore, postScoreNew } from './game'
 import BGM from './BGM.mp3'
 import { useUserData } from './data';
+import { angle } from './orientation'
 
 defineOptions({
   name: '2048 Game',
@@ -136,10 +137,6 @@ watch(() => options.recordsMode || options.error || options.reverse, (val) => wi
 
 const userData = useUserData(options)
 provide('userData', userData)
-
-const {
-  angle
-} = useScreenOrientation()
 </script>
 
 <template>
@@ -161,7 +158,8 @@ const {
       <div class="GameWrapper" :class="{ reverse: options.reverse }">
         <div id="GameJust" class="Just">
           <div v-if="options.version" class="BlockLine" v-for="(col, i) in game.map" :key="i">
-            <Block :angle="angle" v-for="(item, j) in col" :tracks="tracks" :key="j" :x="j" :y="i" :val="item" />
+            <Block :angle="gameSettings.func.rotate ? angle : 0" v-for="(item, j) in col" :tracks="tracks" :key="j"
+              :x="j" :y="i" :val="item" />
           </div>
         </div>
         <div class="Back">

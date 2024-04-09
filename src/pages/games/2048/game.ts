@@ -34,6 +34,7 @@ export class Game2048 {
       failed: true
     },
     func: {
+      rotate: true,
       startUp: true
     },
     color: "shinning"

@@ -181,6 +181,11 @@ const startUpMode = computed(() => average.value >= 5000 && level.value?.[0] >= 
         </template>
       </p>
 
+      <TouchSlider title="跟随模式" v-model="data.func.rotate" />
+      <p op-80>
+        跟随模式能够根据你设备的方向（如果支持）自动切换游戏地图朝向。
+      </p>
+
       <br />
       <Personal :options="options" />
     </div>

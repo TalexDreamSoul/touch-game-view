@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { watchEffect, ref, watch } from 'vue'
 
-const props = defineProps({
-  val: Number,
-  x: Number,
-  y: Number,
-  angle: Number,
+const props = defineProps<{
+  val: number,
+  x: number,
+  y: number,
+  angle: any,
   tracks: Array<Object>,
-});
+}>();
 
 const dom = ref()
 watchEffect(() => {
@@ -16,7 +16,10 @@ watchEffect(() => {
 
   const { x, y, tracks, angle } = props
 
-  el.style.setProperty('--r', `${angle}deg`)
+  console.log("angle", angle)
+
+  el.style.setProperty('--r', `${angle || 0}deg`)
+  el.style.transform = 'rotate(var(--r, 0)) scale(1)'
 
   el.style.color = colors[props.val!]
   el.style.fontSize = `${fontSizes[props.val === 0 ? 0 : Math.log2(props.val!)] * 2}rem`

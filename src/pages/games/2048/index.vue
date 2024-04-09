@@ -160,7 +160,7 @@ provide('userData', userData)
     </div>
 
     <div class="Tools">
-      道具
+      暂无道具
     </div>
 
     <div class="ToggleButtons">

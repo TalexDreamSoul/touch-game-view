@@ -1,125 +1,19 @@
 <script setup lang="ts">
+import { purchases, format, computedTasks, genTasks } from './data';
 const props = defineProps<{
   options: any,
 }>()
 
-const totalScores = computed(() => !props.options?.history?.length ? 0 : props.options.history.reduce((sum: any, item: any) => sum + item.score, 0))
-
-const average = computed(() => {
-  // options有一个history记录战绩列表 其中每一项score代表分数 给我求平均分
-  return !props.options?.history?.length ? 0 : Math.round(totalScores.value / props.options.history.length)
-})
-
-const total = computed(() => totalScores.value.toString().replace(/\d{1,3}(?=(\d{3})+$)/g, '$&,'))
-
-const tasks = ref<any[]>([])
-
-function genTotalScores(scores: number[]) {
-  [...scores].forEach(num => {
-    tasks.value.push({
-      per: () => {
-        if (totalScores.value >= num) return 100
-
-        else return Math.floor((totalScores.value / num) * 100)
-      },
-      text: `累计得分达到 ${format(num)} 分`
-    })
-  })
-}
-
-genTotalScores([10000, 50000, 100000, 300000, 500000, 800000, 1000000])
-
-function genGameAccounts(scores: number[]) {
-  [...scores].forEach(num => {
-    tasks.value.push({
-      per: () => {
-        if (props.options.game_count >= num) return 100
-
-        else return Math.floor((props.options.game_count / num) * 100)
-      },
-      text: `游戏次数达到 ${format(num)} 次`
-    })
-  })
-}
-
-genGameAccounts([10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
-
-function genSingleTasks(scores: number[]) {
-  [...scores].forEach(num => {
-    tasks.value.push({
-      per: () => {
-        if (props.options.score >= num) return 100
-
-        else return Math.floor((props.options.score / num) * 100)
-      },
-      text: `单局积分达到 ${format(num)} 分`
-    })
-  })
-}
-
-function genAverageScoreTasks(scores: number[]) {
-  [...scores].forEach(num => {
-    tasks.value.push({
-      per: () => {
-        if (average.value >= num) return 100
-
-        else return Math.floor((average.value / num) * 100)
-      },
-      text: `平均得分达到 ${format(num)} 分`
-    })
-  })
-}
-
-genAverageScoreTasks([1000, 3000, 5000, 10000, 30000, 50000, 100000])
-
-const computedTasks = computed(() => {
-  const _tasks = tasks.value.map((item: any) => {
-    return {
-      text: item.text,
-      per: item.per()
-    }
-  })
-
-  // 将 per 为 100 的放到最后，其余从大到小
-  return _tasks.sort((a: any, b: any) => {
-    if (a.per === 100) return 1
-    else if (b.per === 100) return -1
-    else return b.per - a.per
-  })
-})
-
-genSingleTasks([1000, 3000, 5000, 8000, 10000, 15000, 20000, 25000, 30000, 35000, 40000, 50000, 80000, 100000])
-
-const purchases = ref(["抽奖箱", "撤销道具", "复活道具", "屏蔽交换道具"])
-
-// 设置等级升级公式
-// 传入 num 返回[等级，下一等级总共需要经验，百分比]
-// 0-1 需要 5000
-// 1-2 需要 10000
-// 2-3 需要 20000
-// 3-4 需要 30000
-// 4-5 需要 50000
-// 5-6 需要 80000
-// 6-7 需要 100000
-// 现在根据分数倒推等级
-// LEVEL = Math.floor(Math.log2(totalScores.value / 10000))
-const level = computed(() => {
-  const level = Math.floor(Math.log2(totalScores.value / 1000))
-  const total = 1000 * Math.pow(2, level + 1)
-  const percent = Math.floor((totalScores.value / total) * 100)
-  return [level, total, percent]
-})
-
-function format(val: any) {
-  return String(val).replace(/\d{1,3}(?=(\d{3})+$)/g, '$&,')
-}
+const { totalScores, average, total, level }: any = inject('userData')!
+if (computedTasks.value.length === 0)
+  genTasks({ totalScores, average, total, ...props.options })
 </script>
 
 <template>
   <div>
     <div class="player-info-card">
       <div class="info">
-        <h2>你的个人游戏信息</h2>
+        <h2>个人游戏信息</h2>
         <div class="stats">
           <div class="stat">
             <div class="label">累计得分:</div>
@@ -146,22 +40,22 @@ function format(val: any) {
 
     <div class="player-info-card">
       <div class="purchases">
+        <h3>道具商店</h3>
+        <span>积分：{{ String(options?.cumulative_score || 0).replace(/\d{1,3}(?=(\d{3})+$)/g, '$&,') }}</span>
+      </div>
+      <ul>
+        <li v-for="(purchase, index) in purchases" :key="index">{{ purchase }}</li>
+      </ul>
+    </div>
+
+    <div class="player-info-card">
+      <div class="purchases">
         <h3>完成成就</h3>
         <span>统计： {{ computedTasks.filter(item => item.per >= 100).length }} /{{ computedTasks.length }} 个</span>
       </div>
       <ul>
         <li :class="{ active: purchase.per >= 100 }" :style="`--p: ${purchase.per}%`"
           v-for="(purchase, index) in computedTasks" :key="index">{{ purchase.text }}</li>
-      </ul>
-    </div>
-
-    <div class="player-info-card">
-      <div class="purchases">
-        <h3>商店购买</h3>
-        <span>积分：{{ String(options?.cumulative_score || 0).replace(/\d{1,3}(?=(\d{3})+$)/g, '$&,') }}</span>
-      </div>
-      <ul>
-        <li v-for="(purchase, index) in purchases" :key="index">{{ purchase }}</li>
       </ul>
     </div>
   </div>
@@ -236,7 +130,7 @@ span.level-progress .color {
   top: 0;
 
   border-radius: .25rem;
-  background-color: #16161680;
+  background-color: #16161610;
 }
 
 .purchases {

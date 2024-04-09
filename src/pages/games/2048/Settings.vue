@@ -64,6 +64,8 @@ function listen(el: HTMLElement, options: Options) {
     // 如果触控点不止一个不触发
     if (e.touches.length !== 1) return
 
+    e.stopPropagation()
+
     el.classList.add('active')
 
     _options.startY = _options.lastY = e.touches[0].clientY
@@ -75,6 +77,8 @@ function listen(el: HTMLElement, options: Options) {
 
   parentEl.addEventListener('touchend', (e) => {
     if (!_options.touch) return
+
+    e.stopPropagation()
 
     _options.touch = false
 
@@ -108,6 +112,8 @@ function listen(el: HTMLElement, options: Options) {
 
   parentEl.addEventListener('touchmove', (e) => {
     if (!_options.touch) return
+
+    e.stopPropagation()
 
     const touch = e.touches[0]
 
@@ -146,6 +152,9 @@ onMounted(() => {
 
   listen(el, _options)
 })
+
+const { level, average }: any = inject('userData')!
+const startUpMode = computed(() => average.value >= 5000 && level.value?.[0] >= 10)
 </script>
 
 <template>
@@ -160,6 +169,17 @@ onMounted(() => {
       <TouchSlider title="失败音效" reversed v-model="data.mute.failed" />
       <TouchSlider title="滑动震动" v-model="data.vibrate.slide" />
       <TouchSlider title="失败震动" v-model="data.vibrate.failed" />
+
+      <br />
+      <TouchSlider :disabled="!startUpMode" title="新手模式" v-model="data.func.startUp" />
+      <p op-80>
+        <template v-if="startUpMode">
+          新手模式旨在帮助您更好的熟悉2048游戏。关闭后，您的游戏分数将会从5,000分起步，并且需要8,000分才会累计入游戏积分！
+        </template>
+        <template v-else>
+          您当前无法关闭新手模式，因为您的平均得分不高于5,000或等级未达到10级！请您尝试继续游戏，努力提升！
+        </template>
+      </p>
 
       <br />
       <Personal :options="options" />

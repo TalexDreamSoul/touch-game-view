@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import VolumeOn from './volume-on.svg?raw'
-import VolumeOff from './volume-off.svg?raw'
 import HeadBar from './HeadBar.vue';
 import Block from './Block.vue';
-import Records from './Records.vue';
 import Settings from './Settings.vue';
 import BackFace from './BackFace.vue';
-import { Game2048, postScore } from './game'
+import { Game2048, postScore, postScoreNew } from './game'
 import BGM from './BGM.mp3'
+import { useUserData } from './data';
 
 defineOptions({
   name: '2048 Game',
@@ -30,7 +28,7 @@ watch(gameSettings, (newVal) => {
 
 const options = reactive({
   nonLatest: false,
-  latest: "493",
+  latest: "495",
   mute: false,
   reverse: false,
   error: false,
@@ -46,10 +44,6 @@ const options = reactive({
 const user = window.$name
 
 function transparencyToggle() {
-  // if (historyHighest.value <= 5000) {
-  //   alert('很抱歉，您需要达到 5,000 分才可以启用战绩欣赏模式！')
-  //   return
-  // }
   if (historyHighest.value <= 1000) {
     alert('很抱歉，您需要达到 3,000 分才可以进行游戏设置！')
     return
@@ -72,7 +66,9 @@ game.listen((_tracks: any) => {
   const music = document.getElementById('music') as HTMLAudioElement
   if (options.state.status === 'end') {
     // options.state.status = 'pending'
-    postScore(user.value, options.state.score)
+    if (gameSettings.func.startUp) {
+      postScore(user.value, options.state.score)
+    } else postScoreNew(user.value, options.state.score)
 
     // 清空缓存
     localStorage.removeItem('__map');
@@ -138,22 +134,20 @@ getStatus()
 // @ts-ignore force exist
 watch(() => options.recordsMode || options.error || options.reverse, (val) => window._ignore = val)
 
-// watch(() => options.mute, val => {
-//   const music = document.getElementById('music') as HTMLAudioElement
-//   if (val) music?.pause?.()
-//   else music?.play?.()
-// })
+const userData = useUserData(options)
+provide('userData', userData)
 </script>
 
 <template>
   <div @click="reconnect" @touchstart="reconnect" class="Game"
-    :class="{ records: options.recordsMode, error: options.error }">
+    :class="{ startup: gameSettings.func.startUp, records: options.recordsMode, error: options.error }">
     <div class="Game-end" :class="{ show: options.state.status === 'end' }">
       <p>游戏结束</p>
       <button @touchstart="restart" @click="restart">重新开始</button>
     </div>
     <HeadBar :online="options.online" :historyHighest="historyHighest" :rankings="game.rankings"
       :score="options.state.score" />
+
     <div class="GameWrapper" :class="{ reverse: options.reverse }">
       <div id="GameJust" class="Just">
         <div v-if="options.version" class="BlockLine" v-for="(col, i) in game.map" :key="i">
@@ -165,33 +159,39 @@ watch(() => options.recordsMode || options.error || options.reverse, (val) => wi
       </div>
     </div>
 
-    <!-- <div class="Tools">
+    <div class="Tools">
       道具
-    </div> -->
+    </div>
 
     <div class="ToggleButtons">
       <span class="rank-button" @touchstart.prevent="options.reverse = !options.reverse"
-        @click="options.reverse = !options.reverse">个人信息</span>
+        @click="options.reverse = !options.reverse">排行榜单</span>
       <span class="setting-button" @touchstart.prevent="transparencyToggle" @click="transparencyToggle">游戏设置</span>
     </div>
 
-    <!-- <Records :show="options.recordsMode" :data="options.personal" /> -->
     <Settings :options="options.personal" v-model:show="options.recordsMode" :data="gameSettings" />
 
     <div @click="change" @touchstart="change" class="Game-Info">
       欢迎 {{ user }} ！ <span class="version">v{{ options.latest }}/{{ options.version }}</span>
     </div>
 
-    <!-- <div @touchstart="options.mute = !options.mute" @click="options.mute = !options.mute" class="mute">
-      <span v-html="options.mute ? VolumeOff : VolumeOn" />
-    </div> -->
     <audio id="music" :src="BGM" autoplay="false" preload="auto"></audio>
 
-    <div v-if="options.nonLatest" class="non-latest">您的页面不是最新版本，刷新多次后更新！</div>
+    <div v-if="!options.nonLatest" class="non-latest">您的页面不是最新版本，刷新多次后更新！</div>
   </div>
 </template>
 
 <style>
+.Game.startup .Tools,
+.Game.records .Tools {
+  opacity: 0;
+  transform: scale(0)
+}
+
+.Game.startup .GameWrapper {
+  top: 55%;
+}
+
 .non-latest {
   position: absolute;
   padding: .125rem .5rem;
@@ -259,9 +259,9 @@ watch(() => options.recordsMode || options.error || options.reverse, (val) => wi
   align-items: center;
 
   left: 50%;
-  bottom: 15%;
+  top: 30%;
 
-  width: 85%;
+  width: 22rem;
   height: 10%;
 
   cursor: pointer;
@@ -274,7 +274,7 @@ watch(() => options.recordsMode || options.error || options.reverse, (val) => wi
   z-index: 100;
 
   overflow: hidden;
-  transition: cubic-bezier(0.445, 0.05, 0.55, 0.95) .25s;
+  transition: .25s;
 }
 
 .ToggleButtons span {
@@ -299,7 +299,7 @@ div.Game.records .ToggleButtons span.rank-button {
 div.Game.records .ToggleButtons span.setting-button {
   width: 100%;
 
-  transform: translateX(-10%);
+  transform: translateX(-7.5%);
 }
 
 .ToggleButtons {
@@ -467,7 +467,7 @@ div.Game.records .ToggleButtons span.setting-button {
   position: absolute;
   display: flex;
 
-  top: 55%;
+  top: 60%;
   left: 50%;
 
   width: 22rem;

@@ -33,6 +33,9 @@ export class Game2048 {
       slide: true,
       failed: true
     },
+    func: {
+      startUp: true
+    },
     color: "shinning"
   })
   directions = {
@@ -126,6 +129,17 @@ export class Game2048 {
 
   }
 
+  startWithInit() {
+    Object.assign(this.map, [
+      [4, 0, 0, 2],
+      [0, 0, 2, 16],
+      [0, 2, 16, 128],
+      [2, 16, 128, 512]
+    ])
+
+    this.state.score = 5000
+  }
+
   start(name: string) {
     this.name = name
     this.updateUserOnlineStatus()
@@ -147,6 +161,12 @@ export class Game2048 {
         return
       }
     } else {
+      this.state.status = 'start'
+      if (!this.gameSettings.func.startUp) {
+        this.startWithInit()
+        return
+      }
+
       Object.assign(this.map, [
         [0, 0, 0, 0],
         [0, 0, 0, 0],
@@ -162,7 +182,6 @@ export class Game2048 {
       this.map[x][y] = 2;
 
       this.state.score = 0
-      this.state.status = 'start'
     }
 
   }
@@ -502,6 +521,22 @@ const baseUrl = 'https://gameends.tagzxia.com:9981'
 
 let timer: any
 
+export function postScoreNew(user: string, score: number) {
+  clearTimeout(timer)
+
+  timer = setTimeout(() => {
+    fetch(`${baseUrl}/games/2048/score_new/${user}/${score}`, {
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log("score", data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }, 200)
+}
+
 export function postScore(user: string, score: number) {
   clearTimeout(timer)
 
@@ -524,7 +559,6 @@ export function getUserStatus(user: string, cb: Function) {
     .then(res => res.json())
     .then(data => {
       cb(data)
-      console.log('data', data)
     })
     .catch(err => {
       console.log(err)
@@ -547,7 +581,6 @@ export function getOnline(cb: Function) {
     .then(res => res.json())
     .then(data => {
       cb(data)
-      console.log('onlines', data)
     })
     .catch(err => {
       console.log(err)
@@ -560,7 +593,6 @@ export function getRankings(cb: Function) {
     .then(res => res.json())
     .then(data => {
       cb(data)
-      console.log("rank", data)
     })
     .catch(err => {
       console.log(err)

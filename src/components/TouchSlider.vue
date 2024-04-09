@@ -2,7 +2,8 @@
 const props = defineProps<{
   modelValue: boolean,
   reversed?: boolean,
-  title: string
+  title: string,
+  disabled?: boolean
 }>()
 
 const emits = defineEmits<{
@@ -12,6 +13,8 @@ const emits = defineEmits<{
 const value = computed({
   get: () => props.modelValue,
   set: (value) => {
+    if (props.disabled) return
+
     emits('update:modelValue', value)
 
     window.navigator.vibrate(200);
@@ -20,7 +23,7 @@ const value = computed({
 </script>
 
 <template>
-  <div :class="{ active: !reversed ? value : !value }" @click="value = !value" class="TouchSlider">
+  <div :class="{ disabled, active: !reversed ? value : !value }" @click="value = !value" class="TouchSlider">
     <span class="title">{{ title }}</span>
 
     <span class="button" />
@@ -28,6 +31,11 @@ const value = computed({
 </template>
 
 <style>
+.TouchSlider.disabled .button {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
 .TouchSlider {
   padding: .25rem 0;
   display: flex;

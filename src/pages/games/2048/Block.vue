@@ -71,7 +71,7 @@ backColors[32] = '#6bcae2'
 backColors[128] = '#9ebbee'
 backColors[256] = '#0bc002'
 backColors[512] = '#fb0ae2'
-backColors[1024] = '#0b0aeF'
+backColors[1024] = '#5b5aeF'
 backColors[2048] = '#8b0002'
 backColors[4096] = '#5b5a52'
 
@@ -86,9 +86,9 @@ colors[64] = 'white'
 colors[128] = '#2c3e50'
 colors[256] = '#2c3e50'
 colors[512] = '#2c3e50'
-colors[1024] = '#2c3e50'
-colors[2048] = '#2c3e50'
-colors[4096] = '#2c3e50'
+colors[1024] = '#fff'
+colors[2048] = '#fff'
+colors[4096] = '#fff'
 
 </script>
 

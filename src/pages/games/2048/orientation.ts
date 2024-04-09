@@ -15,7 +15,7 @@ watchEffect(() => {
   }
 
   // x轴
-  if (beta.value <= 10) {
+  if (beta.value >= 0 && beta.value <= 15) {
     angle.value = (gamma.value > 0 ? -1 : 1) * 90
   }
 })

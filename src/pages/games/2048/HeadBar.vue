@@ -43,25 +43,27 @@ onBeforeUnmount(() => end = true)
 </script>
 
 <template>
-  <div class="Game-Bar">
-    <div class="Game-Bar-Title">2048
+  <div class="HeadBar">
+    <div class="Game-Bar">
+      <div class="Game-Bar-Title">2048
+      </div>
+      <div class="Game-Bar-Line">
+        游戏排行
+        <span class="game-score">{{ topIndex || 0 }}</span>
+      </div>
+      <div class="Game-Bar-Line">
+        历史最高
+        <span class="game-score">{{ historyHighest }}</span>
+      </div>
+      <div class="Game-Bar-Line">
+        当前得分
+        <span class="game-score">{{ score }}</span>
+      </div>
     </div>
-    <div class="Game-Bar-Line">
-      游戏排行
-      <span class="game-score">{{ topIndex || 0 }}</span>
+    <div class="Game-SubBar">
+      {{ broadcast }}
+      <!-- 当前有 {{ online.length || 1 }} 个玩家正在游戏... -->
     </div>
-    <div class="Game-Bar-Line">
-      历史最高
-      <span class="game-score">{{ historyHighest }}</span>
-    </div>
-    <div class="Game-Bar-Line">
-      当前得分
-      <span class="game-score">{{ score }}</span>
-    </div>
-  </div>
-  <div class="Game-SubBar">
-    {{ broadcast }}
-    <!-- 当前有 {{ online.length || 1 }} 个玩家正在游戏... -->
   </div>
 </template>
 
@@ -100,22 +102,22 @@ onBeforeUnmount(() => end = true)
 }
 
 .Game-SubBar {
-  position: absolute;
+  position: relative;
   padding: 0 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
 
-  left: 50%;
-  top: 25%;
+  /* left: 50%; */
+  top: 2rem;
 
   width: 24rem;
-  height: 4rem;
+  height: 2rem;
 
   opacity: .5;
   border-radius: 8px;
   /* background-color: #e6e6e6; */
-  transform: translate(-50%, -50%);
+  /* transform: translate(-50%, -50%); */
   z-index: 100;
 
   transition: .25s;
@@ -124,21 +126,21 @@ onBeforeUnmount(() => end = true)
 }
 
 .Game-Bar {
-  position: absolute;
+  position: relative;
   padding: 0 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  left: 50%;
-  top: 15%;
+  /* left: 50%; */
+  top: 0;
 
   width: 24rem;
   height: 4rem;
 
   border-radius: 8px;
   /* background-color: #e6e6e6; */
-  transform: translate(-50%, -50%);
+  /* transform: translate(-50%, 0); */
   z-index: 100;
 
   transition: .25s;

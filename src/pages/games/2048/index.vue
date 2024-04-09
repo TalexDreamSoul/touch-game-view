@@ -28,7 +28,7 @@ watch(gameSettings, (newVal) => {
 
 const options = reactive({
   nonLatest: false,
-  latest: "497",
+  latest: "498",
   mute: false,
   reverse: false,
   error: false,
@@ -136,6 +136,10 @@ watch(() => options.recordsMode || options.error || options.reverse, (val) => wi
 
 const userData = useUserData(options)
 provide('userData', userData)
+
+const {
+  angle
+} = useScreenOrientation()
 </script>
 
 <template>
@@ -145,28 +149,31 @@ provide('userData', userData)
       <p>游戏结束</p>
       <button @touchstart="restart" @click="restart">重新开始</button>
     </div>
-    <HeadBar :online="options.online" :historyHighest="historyHighest" :rankings="game.rankings"
-      :score="options.state.score" />
 
-    <div class="GameWrapper" :class="{ reverse: options.reverse }">
-      <div id="GameJust" class="Just">
-        <div v-if="options.version" class="BlockLine" v-for="(col, i) in game.map" :key="i">
-          <Block v-for="(item, j) in col" :tracks="tracks" :key="j" :x="j" :y="i" :val="item" />
+    <div class="Game-Container">
+      <HeadBar :online="options.online" :historyHighest="historyHighest" :rankings="game.rankings"
+        :score="options.state.score" />
+
+      <div class="Tools">
+        暂无道具
+      </div>
+
+      <div class="GameWrapper" :class="{ reverse: options.reverse }">
+        <div id="GameJust" class="Just">
+          <div v-if="options.version" class="BlockLine" v-for="(col, i) in game.map" :key="i">
+            <Block :angle="angle" v-for="(item, j) in col" :tracks="tracks" :key="j" :x="j" :y="i" :val="item" />
+          </div>
+        </div>
+        <div class="Back">
+          <BackFace v-if="options.reverse" :options="options" :rankings="game.rankings" />
         </div>
       </div>
-      <div class="Back">
-        <BackFace v-if="options.reverse" :options="options" :rankings="game.rankings" />
+
+      <div class="ToggleButtons">
+        <span class="rank-button" @touchstart.prevent="options.reverse = !options.reverse"
+          @click="options.reverse = !options.reverse">排行榜单</span>
+        <span class="setting-button" @touchstart.prevent="transparencyToggle" @click="transparencyToggle">游戏设置</span>
       </div>
-    </div>
-
-    <div class="Tools">
-      暂无道具
-    </div>
-
-    <div class="ToggleButtons">
-      <span class="rank-button" @touchstart.prevent="options.reverse = !options.reverse"
-        @click="options.reverse = !options.reverse">排行榜单</span>
-      <span class="setting-button" @touchstart.prevent="transparencyToggle" @click="transparencyToggle">游戏设置</span>
     </div>
 
     <Settings :options="options.personal" v-model:show="options.recordsMode" :data="gameSettings" />
@@ -182,6 +189,43 @@ provide('userData', userData)
 </template>
 
 <style>
+.Game-Container {
+  position: absolute;
+  padding: 1rem 0;
+  display: flex;
+
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-around;
+
+  top: 20px;
+
+  width: 100%;
+  height: calc(100% - 20px);
+}
+
+.GameWrapper {
+  position: relative;
+  display: flex;
+
+  top: 0;
+  left: 0;
+
+  width: 22rem;
+  height: 22rem;
+
+  border-radius: 8px;
+  background-color: #e6e6e680;
+  backdrop-filter: blur(18px) saturate(180%);
+  /* transform: translate(-50%, -50%); */
+
+  transition: .25s cubic-bezier(.4, 0, .2, 1);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+
+  overflow: hidden;
+}
+
 .Game.startup .Tools,
 .Game.records .Tools {
   opacity: 0;
@@ -189,7 +233,8 @@ provide('userData', userData)
 }
 
 .Game.startup .GameWrapper {
-  top: 52.5%;
+  margin-top: -50%;
+  /* top: 52.5%; */
 }
 
 .non-latest {
@@ -226,12 +271,6 @@ provide('userData', userData)
   }
 }
 
-/* .mute {
-  zoom: .75;
-  position: absolute;
-  margin: .75rem;
-} */
-
 .version {
   opacity: .5;
   font-size: 0.8rem;
@@ -247,19 +286,19 @@ provide('userData', userData)
 }
 
 .Game.records .ToggleButtons {
-  bottom: 91.25%;
+  bottom: 89%;
 }
 
 .Tools {
-  position: absolute;
+  position: relative;
   display: flex;
 
   gap: 1rem;
   justify-content: center;
   align-items: center;
 
-  left: 50%;
-  top: 30%;
+  /* left: 50%; */
+  /* top: 30%; */
 
   width: 22rem;
   height: 5%;
@@ -270,7 +309,7 @@ provide('userData', userData)
   border-radius: 8px;
   background-color: #e6e6e680;
   backdrop-filter: blur(18px) saturate(180%);
-  transform: translate(-50%, 0);
+  /* transform: translate(-50%, 0); */
   z-index: 100;
 
   overflow: hidden;
@@ -303,15 +342,15 @@ div.Game.records .ToggleButtons span.setting-button {
 }
 
 .ToggleButtons {
-  position: absolute;
+  position: relative;
   display: flex;
 
   gap: 1rem;
   justify-content: center;
   align-items: center;
 
-  left: 50%;
-  bottom: 5%;
+  /* left: 50%; */
+  /* bottom: 5%; */
 
   width: 85%;
   height: 5%;
@@ -321,7 +360,7 @@ div.Game.records .ToggleButtons span.setting-button {
   user-select: none;
   overflow-y: scroll;
   /* background-color: #e6e6e6; */
-  transform: translate(-50%, 0);
+  /* transform: translate(-50%, 0); */
   z-index: 100;
 
   overflow: hidden;
@@ -461,28 +500,6 @@ div.Game.records .ToggleButtons span.setting-button {
   to {
     filter: hue-rotate(360deg);
   }
-}
-
-.GameWrapper {
-  position: absolute;
-  display: flex;
-
-  top: 60%;
-  left: 50%;
-
-  width: 22rem;
-  height: 22rem;
-
-  border-radius: 8px;
-  background-color: #e6e6e680;
-  backdrop-filter: blur(18px) saturate(180%);
-  transform: translate(-50%, -50%);
-
-  transition: .25s cubic-bezier(.4, 0, .2, 1);
-  transform-style: preserve-3d;
-  perspective: 1000px;
-
-  overflow: hidden;
 }
 </style>
 

@@ -5,6 +5,7 @@ const props = defineProps({
   val: Number,
   x: Number,
   y: Number,
+  angle: Number,
   tracks: Array<Object>,
 });
 
@@ -13,7 +14,9 @@ watchEffect(() => {
   const el = dom.value
   if (!el) return
 
-  const { x, y, tracks } = props
+  const { x, y, tracks, angle } = props
+
+  el.style.setProperty('--r', `${angle}deg`)
 
   el.style.color = colors[props.val!]
   el.style.fontSize = `${fontSizes[props.val === 0 ? 0 : Math.log2(props.val!)] * 2}rem`
@@ -30,10 +33,10 @@ watchEffect(() => {
     el.style.left = `${(from[0]!) * 25 + 1}%`
     el.style.top = `${(from[1]!) * 25 + 1}%`
 
-    el.style.transform = 'scale(0.8)'
+    el.style.transform = 'rotate(var(--r, 0)) scale(0.8)'
 
     setTimeout(() => {
-      el.style.transform = 'scale(1)'
+      el.style.transform = 'rotate(var(--r, 0)) scale(1)'
     }, 100)
 
     setTimeout(() => {
@@ -62,7 +65,12 @@ backColors[8] = '#eecf40'
 backColors[16] = '#ffaa4f'
 backColors[64] = '#9ebbee'
 backColors[32] = '#6bcae2'
-backColors[128] = 'white'
+backColors[128] = '#9ebbee'
+backColors[256] = '#0bc002'
+backColors[512] = '#fb0ae2'
+backColors[1024] = '#0b0aeF'
+backColors[2048] = '#8b0002'
+backColors[4096] = '#5b5a52'
 
 const colors: Array<string> = []
 colors[0] = '#000'
@@ -73,6 +81,11 @@ colors[16] = 'white'
 colors[32] = 'white'
 colors[64] = 'white'
 colors[128] = '#2c3e50'
+colors[256] = '#2c3e50'
+colors[512] = '#2c3e50'
+colors[1024] = '#2c3e50'
+colors[2048] = '#2c3e50'
+colors[4096] = '#2c3e50'
 
 </script>
 

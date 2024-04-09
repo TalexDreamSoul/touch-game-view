@@ -28,7 +28,7 @@ watch(gameSettings, (newVal) => {
 
 const options = reactive({
   nonLatest: false,
-  latest: "498",
+  latest: "499",
   mute: false,
   reverse: false,
   error: false,
@@ -282,11 +282,12 @@ const {
 
   perspective: 1000px;
   transform-style: preserve-3d;
-  transform: translate(-50%, -120%) scale(0) rotate3D(0.5, 0, 0, 320deg);
+  transform: translate(0, -120%) scale(0) rotate3D(0.5, 0, 0, 320deg);
 }
 
 .Game.records .ToggleButtons {
-  bottom: 89%;
+  opacity: 0;
+  /* bottom: 89%; */
 }
 
 .Tools {

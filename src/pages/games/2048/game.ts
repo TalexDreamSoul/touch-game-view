@@ -339,9 +339,16 @@ export class Game2048 {
 
   playBoom() {
     // 播放 BoomMp3
-    if (this.gameSettings.mute.sound) return
-    const audio = new Audio(BoomMp3)
-    audio.play()
+    if (!this.gameSettings.mute.sound) {
+      const audio = new Audio(BoomMp3)
+      audio.play()
+    }
+
+    if (this.gameSettings.vibrate.slide) {
+      window.navigator.vibrate([
+        30, 100
+      ]);
+    }
   }
 
   playFailed() {

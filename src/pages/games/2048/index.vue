@@ -30,7 +30,7 @@ watch(gameSettings, (newVal) => {
 
 const options = reactive({
   nonLatest: false,
-  latest: "491",
+  latest: "492",
   mute: false,
   reverse: false,
   error: false,

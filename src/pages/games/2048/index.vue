@@ -29,7 +29,7 @@ watch(gameSettings, (newVal) => {
 
 const options = reactive({
   nonLatest: false,
-  latest: "4910",
+  latest: "4911",
   mute: false,
   reverse: false,
   error: false,
@@ -141,7 +141,7 @@ provide('userData', userData)
 
 <template>
   <div @click="reconnect" @touchstart="reconnect" class="Game"
-    :class="{ startup: gameSettings.func.startUp, records: options.recordsMode, error: options.error }">
+    :class="{ reverse: options.reverse, startup: gameSettings.func.startUp, records: options.recordsMode, error: options.error }">
     <div class="Game-end" :class="{ show: options.state.status === 'end' }">
       <p>游戏结束</p>
       <button @touchstart="restart" @click="restart">重新开始</button>
@@ -222,6 +222,10 @@ provide('userData', userData)
   perspective: 1000px;
 
   overflow: hidden;
+}
+
+.Game.reverse .Tools {
+  opacity: 0;
 }
 
 .Game.startup .Tools,
@@ -367,7 +371,7 @@ div.Game.records .ToggleButtons span.setting-button {
 }
 
 .GameWrapper.reverse {
-  transform: translate(-50%, -50%) rotateY(180deg)
+  transform: translate(0, -25%) rotateY(180deg)
 }
 
 .GameWrapper .Back,

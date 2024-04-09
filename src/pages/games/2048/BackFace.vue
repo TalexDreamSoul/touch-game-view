@@ -5,13 +5,19 @@ const props = defineProps<{
 }>()
 
 const menu = ref(0)
+
+function getTime(time: any) {
+  // 将时间转换为 xx:xx:xx
+  const date = new Date(time * 1000)
+  return date.toUTCString()
+}
 </script>
 
 <template>
   <div class="BackFace">
     <div class="Menu">
       <span @touchstart.prevent="menu = 0" @click="menu = 0" :class="{ select: menu === 0 }">排行</span>
-      <span @touchstart.prevent="menu = 1" @click="menu = 1" :class="{ select: menu === 1 }">奖章</span>
+      <span @touchstart.prevent="menu = 1" @click="menu = 1" :class="{ select: menu === 1 }">战绩</span>
     </div>
     <div class="Main">
       <div :class="{ select: menu === 0 }" class="Rankings">
@@ -28,15 +34,47 @@ const menu = ref(0)
           </span>
         </span>
       </div>
-      <div :class="{ select: menu === 1 }" class="Awards">
-        你还没有获得任何奖章.
-        {{ options.personal }}
+      <div v-if="options?.personal?.history?.length" :class="{ select: menu === 1 }" class="Awards">
+        <div class="Award" v-for="(item, index) in [...options.personal.history].reverse()">
+          {{ index + 1 }}. {{ item.score }} 分
+          <span class="time">{{ getTime(item.timestamp) }}</span>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style>
+/* // 适当美化一下每一行战绩格式 */
+div.Awards .Award {
+  padding: .25rem .5rem;
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  font-size: 1rem;
+  border-radius: 8px;
+  background-color: #eeeeee50;
+  backdrop-filter: blur(8px);
+}
+
+div.Awards .Award .time {
+  margin-left: auto;
+  opacity: .5;
+  font-size: .75rem;
+}
+
+div.Awards {
+  margin: 1100px 0;
+
+  display: flex;
+  flex-direction: column;
+  /* flex-wrap: wrap; */
+  gap: .25rem;
+  justify-content: center;
+}
+
 div span.online-status {
   opacity: .5;
   font-size: .75rem;

@@ -135,7 +135,7 @@ function listen(el: HTMLElement, options: Options) {
     const scale = (totalDiff / thresholdDistance) * (scaleRange[1] - scaleRange[0]) + scaleRange[0]
 
     display.value = true
-    parentEl.style.transform = `translateY(0) scaleY(${scale}) translateY(${totalDiff}px)`
+    parentEl.style.transform = `translateY(0) scaleY(${scale}) translateY(${totalDiff * (.9 + elasticity)}px)`
 
     // console.log("totalDiff", totalDiff, scale)
   })

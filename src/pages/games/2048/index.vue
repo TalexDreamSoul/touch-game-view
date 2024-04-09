@@ -177,7 +177,7 @@ provide('userData', userData)
 
     <audio id="music" :src="BGM" autoplay="false" preload="auto"></audio>
 
-    <div v-if="!options.nonLatest" class="non-latest">您的页面不是最新版本，刷新多次后更新！</div>
+    <div v-if="options.nonLatest" class="non-latest">您的页面不是最新版本，刷新多次后更新！</div>
   </div>
 </template>
 
@@ -189,7 +189,7 @@ provide('userData', userData)
 }
 
 .Game.startup .GameWrapper {
-  top: 55%;
+  top: 52.5%;
 }
 
 .non-latest {
@@ -262,7 +262,7 @@ provide('userData', userData)
   top: 30%;
 
   width: 22rem;
-  height: 10%;
+  height: 5%;
 
   cursor: pointer;
   user-select: none;

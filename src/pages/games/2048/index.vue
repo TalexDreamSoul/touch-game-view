@@ -29,7 +29,7 @@ watch(gameSettings, (newVal) => {
 
 const options = reactive({
   nonLatest: false,
-  latest: "4912",
+  latest: "4913",
   mute: false,
   reverse: false,
   error: false,
@@ -102,6 +102,7 @@ function change() {
 
     localStorage.removeItem('__map');
     localStorage.removeItem('__state');
+    localStorage.removeItem('gameSettings');
 
     location.reload()
   }

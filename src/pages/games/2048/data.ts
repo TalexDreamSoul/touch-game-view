@@ -29,6 +29,9 @@ export function useUserData(userData: any) {
 export const tasks = ref<any[]>([])
 
 export function genTasks(options: any) {
+  tasks.value = []
+
+
   function genTotalScores(scores: number[]) {
     [...scores].forEach(num => {
       tasks.value.push({

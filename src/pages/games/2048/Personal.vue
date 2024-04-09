@@ -5,8 +5,9 @@ const props = defineProps<{
 }>()
 
 const { totalScores, average, total, level }: any = inject('userData')!
-if (computedTasks.value.length === 0)
+watchEffect(() => {
   genTasks({ totalScores, average, total, ...props.options })
+})
 </script>
 
 <template>
@@ -51,7 +52,7 @@ if (computedTasks.value.length === 0)
     <div class="player-info-card">
       <div class="purchases">
         <h3>完成成就</h3>
-        <span>统计： {{ computedTasks.filter(item => item.per >= 100).length }} /{{ computedTasks.length }} 个</span>
+        <span>统计： {{ computedTasks.filter(item => item.per >= 100).length }}/{{ computedTasks.length }} 个</span>
       </div>
       <ul>
         <li :class="{ active: purchase.per >= 100 }" :style="`--p: ${purchase.per}%`"

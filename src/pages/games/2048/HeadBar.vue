@@ -109,7 +109,7 @@ onBeforeUnmount(() => end = true)
   align-items: center;
 
   /* left: 50%; */
-  top: 2rem;
+  top: 1rem;
 
   width: 24rem;
   height: 2rem;

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
+  show: boolean,
   rankings: any,
   options: any
 }>()
@@ -14,30 +15,32 @@ function getTime(time: any) {
 </script>
 
 <template>
-  <div class="BackFace">
-    <div class="Menu">
-      <span @touchstart.prevent="menu = 0" @click="menu = 0" :class="{ select: menu === 0 }">排行</span>
-      <span @touchstart.prevent="menu = 1" @click="menu = 1" :class="{ select: menu === 1 }">战绩</span>
-    </div>
-    <div class="Main">
-      <div :class="{ select: menu === 0 }" class="Rankings">
-        <span class="Rank" :class="`Rank-${index + 1}`" v-for="(item, index) in rankings.value">
-          {{ index + 1 }}. {{ item.user }}<span class="online-status"
-            v-if="options.online.indexOf(item.user) !== -1">在线</span>: {{ item.score
-          }}分
-
-          <span class="Float">
-            <span v-if="index === 0">大师之首</span>
-            <span v-else-if="index === 1">一代宗师</span>
-            <span v-else-if="index === 2">承蒙厚爱</span>
-            <span v-else>手下败将</span>
-          </span>
-        </span>
+  <div class="Rank-Container" :class="{ show }">
+    <div class="BackFace">
+      <div class="Menu">
+        <span @touchstart.prevent="menu = 0" @click="menu = 0" :class="{ select: menu === 0 }">排行</span>
+        <span @touchstart.prevent="menu = 1" @click="menu = 1" :class="{ select: menu === 1 }">战绩</span>
       </div>
-      <div v-if="options?.personal?.history?.length" :class="{ select: menu === 1 }" class="Awards">
-        <div class="Award" v-for="(item, index) in [...options.personal.history].reverse()">
-          {{ index + 1 }}. {{ item.score }} 分
-          <span class="time">{{ getTime(item.timestamp) }}</span>
+      <div class="Main">
+        <div :class="{ select: menu === 0 }" class="Rankings">
+          <span class="Rank" :class="`Rank-${index + 1}`" v-for="(item, index) in rankings.value">
+            {{ index + 1 }}. {{ item.user }}<span class="online-status"
+              v-if="options.online.indexOf(item.user) !== -1">在线</span>: {{ item.score
+            }}分
+
+            <span class="Float">
+              <span v-if="index === 0">大师之首</span>
+              <span v-else-if="index === 1">一代宗师</span>
+              <span v-else-if="index === 2">承蒙厚爱</span>
+              <span v-else>手下败将</span>
+            </span>
+          </span>
+        </div>
+        <div v-if="options?.personal?.history?.length" :class="{ select: menu === 1 }" class="Awards">
+          <div class="Award" v-for="(item, index) in [...options.personal.history].reverse()">
+            {{ index + 1 }}. {{ item.score }} 分
+            <span class="time">{{ getTime(item.timestamp) }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -45,7 +48,58 @@ function getTime(time: any) {
 </template>
 
 <style>
-/* // 适当美化一下每一行战绩格式 */
+.Rank-Container {
+  position: absolute;
+
+  left: 0;
+  top: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  color: white;
+
+  transition: .125s;
+  transform: scale(0);
+
+  background-color: #ffffff00;
+}
+
+.Rank-Container.show {
+
+  transform: scale(1);
+  background-color: #e6e6e680;
+}
+
+.Game.rankings .GameWrapper .Just {
+  opacity: 0;
+}
+
+.Game.rankings .GameWrapper {
+  /* width: 100%; */
+  height: 100%;
+
+  transform: translateY(-10%) rotateY(180deg);
+}
+
+.Game.rankings .HeadBar {
+  opacity: 0;
+}
+
+.Game.rankings .GameWrapper .Back {
+  transform: rotateY(180deg);
+
+  backface-visibility: visible;
+}
+
+.Game.rankings .GameWrapper .Just {
+  backface-visibility: hidden;
+}
+
 div.Awards .Award {
   padding: .25rem .5rem;
   display: flex;
@@ -163,6 +217,7 @@ div span.Rank {
 
   padding: .5rem;
 
+  width: 100%;
   height: 100%;
 
   backdrop-filter: blur(18px) saturate(180%);

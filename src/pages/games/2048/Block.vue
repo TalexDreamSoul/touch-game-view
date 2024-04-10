@@ -16,8 +16,6 @@ watchEffect(() => {
 
   const { x, y, tracks, angle } = props
 
-  console.log("angle", angle)
-
   el.style.setProperty('--r', `${angle || 0}deg`)
   el.style.transform = 'rotate(var(--r, 0)) scale(1)'
 
@@ -58,7 +56,7 @@ watchEffect(() => {
 })
 
 //                 0 2 4 8     16   32    64   128   256  512  1024 2048  4096
-const fontSizes = [1, 1, 0.95, 0.9, 0.9, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.5]
+const fontSizes = [1, 1, 0.95, 0.9, 0.9, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.55, 0.55]
 
 const backColors: Array<string> = []
 backColors[0] = '#f6f6f6'
@@ -69,11 +67,11 @@ backColors[16] = '#ffaa4f'
 backColors[64] = '#9ebbee'
 backColors[32] = '#6bcae2'
 backColors[128] = '#9ebbee'
-backColors[256] = '#0bc002'
+backColors[256] = '#8bc002'
 backColors[512] = '#fb0ae2'
-backColors[1024] = '#5b5aeF'
-backColors[2048] = '#8b0002'
-backColors[4096] = '#5b5a52'
+backColors[1024] = '#5b5aAF'
+backColors[2048] = '#8bF082'
+backColors[4096] = '#8bFaF2'
 
 const colors: Array<string> = []
 colors[0] = '#000'
@@ -84,11 +82,11 @@ colors[16] = 'white'
 colors[32] = 'white'
 colors[64] = 'white'
 colors[128] = '#2c3e50'
-colors[256] = '#2c3e50'
-colors[512] = '#2c3e50'
-colors[1024] = '#fff'
-colors[2048] = '#fff'
-colors[4096] = '#fff'
+colors[256] = '#fff'
+colors[512] = '#fff'
+colors[1024] = '#eee'
+colors[2048] = '#212121'
+colors[4096] = '#000'
 
 </script>
 

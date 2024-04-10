@@ -96,7 +96,7 @@ onBeforeUnmount(() => end = true)
   justify-content: center;
 
   color: #fff;
-  border-radius: 8px;
+  border-radius: 12px;
   background: #C4876A80;
   backdrop-filter: blur(18px) saturate(180%);
 }

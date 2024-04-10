@@ -29,7 +29,7 @@ watch(gameSettings, (newVal) => {
 
 const options = reactive({
   nonLatest: false,
-  latest: "4913",
+  latest: "4101",
   mute: false,
   reverse: false,
   error: false,
@@ -236,7 +236,7 @@ provide('userData', userData)
 }
 
 .Game.startup .GameWrapper {
-  margin-top: -50%;
+  margin-top: -25%;
   /* top: 52.5%; */
 }
 

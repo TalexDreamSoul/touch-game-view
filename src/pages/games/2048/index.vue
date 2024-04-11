@@ -31,7 +31,7 @@ watch(gameSettings, (newVal) => {
 
 const options = reactive({
   nonLatest: false,
-  latest: "4112",
+  latest: "4113",
   mute: false,
   error: false,
   version: "",
@@ -136,6 +136,8 @@ getStatus()
 
 // @ts-ignore force exist
 watch(() => options.recordsMode || options.error || options.reverse, (val) => window._ignore = val)
+// @ts-ignore force exist
+watch(() => options.menu, (val) => window._ignore = val !== '游戏')
 watch(() => options.recordsMode, val => {
   if (!val) options.menu = '游戏'
 })

@@ -10,11 +10,19 @@ const expand = ref(false)
 const _score = computed(() => {
   return props.data.score.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 })
+
+const cnt = ref(0)
+
+function handleClick() {
+  if (cnt.value <= 3) return cnt.value += 1;
+
+  cnt.value = 0;
+  expand.value = !expand.value
+}
 </script>
 
 <template>
-  <div @touchstart="expand = !expand" @click="expand = !expand" :class="{ expand, top: index < 3, online }"
-    class="RankPerson">
+  <div @click="handleClick" :class="{ expand, top: index < 3, online }" class="RankPerson">
     <div class="RankPerson-Head">
       <p class="user">
         {{ data.user }}

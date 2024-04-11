@@ -28,6 +28,7 @@ declare module 'vue-router/auto-routes' {
     '/games/2048/HeadBar': RouteRecordInfo<'/games/2048/HeadBar', '/games/2048/HeadBar', Record<never, never>, Record<never, never>>,
     '/games/2048/Personal': RouteRecordInfo<'/games/2048/Personal', '/games/2048/Personal', Record<never, never>, Record<never, never>>,
     '/games/2048/rankings/': RouteRecordInfo<'/games/2048/rankings/', '/games/2048/rankings', Record<never, never>, Record<never, never>>,
+    '/games/2048/rankings/RankPerson': RouteRecordInfo<'/games/2048/rankings/RankPerson', '/games/2048/rankings/RankPerson', Record<never, never>, Record<never, never>>,
     '/games/2048/Records': RouteRecordInfo<'/games/2048/Records', '/games/2048/Records', Record<never, never>, Record<never, never>>,
     '/games/2048/Settings': RouteRecordInfo<'/games/2048/Settings', '/games/2048/Settings', Record<never, never>, Record<never, never>>,
     '/games/frog/': RouteRecordInfo<'/games/frog/', '/games/frog', Record<never, never>, Record<never, never>>,

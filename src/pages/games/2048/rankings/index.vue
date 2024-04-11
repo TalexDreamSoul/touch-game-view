@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import RankPerson from './RankPerson.vue';
+
 const props = defineProps<{
   show: boolean,
   rankings: any,
@@ -12,6 +14,9 @@ function getTime(time: any) {
   const date = new Date(time * 1000)
   return date.toUTCString()
 }
+
+// @ts-ignore
+const user = window.$name
 </script>
 
 <template>
@@ -23,7 +28,11 @@ function getTime(time: any) {
       </div>
       <div class="Main">
         <div :class="{ select: menu === 0 }" class="Rankings">
-          <span class="Rank" :class="`Rank-${index + 1}`" v-for="(item, index) in rankings.value">
+          <RankPerson :self="user === item.user" :online="options.online.indexOf(item.user) !== -1" :data="item"
+            :index="index" v-for="(item, index) in rankings.value">
+
+          </RankPerson>
+          <!-- <span class="Rank" :class="`Rank-${index + 1}`" v-for="(item, index) in rankings.value">
             {{ index + 1 }}. {{ item.user }}<span class="online-status"
               v-if="options.online.indexOf(item.user) !== -1">在线</span>: {{ item.score
             }}分
@@ -34,7 +43,7 @@ function getTime(time: any) {
               <span v-else-if="index === 2">承蒙厚爱</span>
               <span v-else>手下败将</span>
             </span>
-          </span>
+          </span> -->
         </div>
         <div v-if="options?.personal?.history?.length" :class="{ select: menu === 1 }" class="Awards">
           <div class="Award" v-for="(item, index) in [...options.personal.history].reverse()">
@@ -121,34 +130,24 @@ div.Awards .Award .time {
   font-size: .75rem;
 }
 
-div.Awards {
-  margin: 1100px 0;
-
-  display: flex;
-  flex-direction: column;
-  /* flex-wrap: wrap; */
-  gap: .25rem;
-  justify-content: center;
-}
-
-div span.online-status {
+/* div span.online-status {
   opacity: .5;
   font-size: .75rem;
-}
+} */
 
-div.Rankings span.Float {
+/* div.Rankings span.Float {
   position: absolute;
 
   right: 0;
 
   opacity: .5;
-}
+} */
 
-div.Rankings span {
+/* div.Rankings span {
   color: inherit;
-}
+} */
 
-div.Rankings span.Rank-1 {
+/* div.Rankings span.Rank-1 {
   color: red;
   background-color: #000;
 
@@ -170,15 +169,14 @@ div.Rankings span.Rank-3 {
 div span.Rank {
   color: #696969;
   background-color: #F6f6f6;
-}
+} */
 
 .Main {
   position: relative;
 
   flex: 1;
 
-  overflow-y: scroll;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .Menu span {
@@ -225,13 +223,13 @@ div span.Rank {
   backdrop-filter: blur(18px) saturate(180%);
 }
 
-.Rankings span {
+/* .Rankings span {
   padding: 0 .25rem;
   color: #000000EA;
 
   font-size: 1.2rem;
   border-radius: 4px;
-}
+} */
 
 .Awards {
   position: absolute;
@@ -250,6 +248,7 @@ div span.Rank {
 
   color: #000000EA;
   transition: .25s;
+  overflow-y: scroll;
   transform: scale(.8) translateX(200%);
 }
 
@@ -259,11 +258,11 @@ div span.Rank {
 
 .Rankings {
   position: absolute;
-  /* padding: 0 .25rem; */
-  display: flex;
+  padding: .25rem .5rem;
+  /* display: flex; */
 
-  flex-direction: column;
-  justify-content: flex-start;
+  /* flex-direction: column; */
+  /* justify-content: flex-start; */
   /* align-items: center; */
 
   top: 0;
@@ -274,6 +273,7 @@ div span.Rank {
 
   gap: .25rem;
   transition: .25s;
+  overflow-y: scroll;
   transform: scale(.8) translateX(-200%);
 }
 

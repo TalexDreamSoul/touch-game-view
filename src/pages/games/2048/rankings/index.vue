@@ -63,15 +63,17 @@ function getTime(time: any) {
   font-size: 20px;
   color: white;
 
+  opacity: 0;
   transition: .125s;
-  transform: scale(0);
+  /* transform: scale(0); */
 
   background-color: #ffffff00;
 }
 
 .Rank-Container.show {
 
-  transform: scale(1);
+  opacity: 1;
+  /* transform: scale(1); */
   background-color: #e6e6e680;
 }
 
@@ -83,22 +85,22 @@ function getTime(time: any) {
   /* width: 100%; */
   height: 100%;
 
-  transform: translateY(-10%) rotateY(180deg);
+  /* transform: translateY(-10%) rotateY(180deg); */
 }
 
 .Game.rankings .HeadBar {
   opacity: 0;
 }
 
-.Game.rankings .GameWrapper .Back {
+/* .Game.rankings .GameWrapper .Back {
   transform: rotateY(180deg);
 
   backface-visibility: visible;
-}
+} */
 
-.Game.rankings .GameWrapper .Just {
+/* .Game.rankings .GameWrapper .Just {
   backface-visibility: hidden;
-}
+} */
 
 div.Awards .Award {
   padding: .25rem .5rem;

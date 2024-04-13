@@ -1,7 +1,6 @@
 import { reactive } from 'vue'
 import BoomMp3 from './boom.mp3'
 import Failed from './FAIELD.mp3'
-import { M } from 'vite/dist/node/types.d-aGj9QkWt'
 
 export type Direction = "up" | "down" | "left" | "right"
 
@@ -37,6 +36,9 @@ export class Game2048 {
     func: {
       rotate: true,
       startUp: true
+    },
+    speed: {
+      tip: false
     },
     time: -1,
     mode: "rank",
@@ -147,6 +149,13 @@ export class Game2048 {
         [128, 16, 2, 0],
         [16, 2, 0, 0],
         [2, 0, 0, 4]
+      ])
+    } else if (Math.random() < 0.5) {
+      Object.assign(this.map, [
+        [2, 0, 0, 4],
+        [16, 2, 0, 0],
+        [128, 16, 2, 0],
+        [512, 128, 16, 2]
       ])
     } else {
       Object.assign(this.map, [
@@ -444,6 +453,7 @@ export class Game2048 {
 
       startx = e.touches[0].pageX;
       starty = e.touches[0].pageY;
+
     }, false);
 
     // document.body.addEventListener('touchmove', function (e) {

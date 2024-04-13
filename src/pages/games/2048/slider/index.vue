@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import BScroll from 'better-scroll'
 import RestartSvg from './../assets/restart.svg?raw'
 
 const props = defineProps<{
   modelValue: string,
-  time: number
+  time: number,
+  gameSettings: any
 }>()
 
 const slideOptions = reactive<any>({
@@ -26,20 +26,32 @@ const emit = defineEmits<{
 const modes = [
   {
     name: "经典排行模式",
-    mode: "rank"
+    mode: "rank",
+    toggled: () => {
+
+    }
   },
   {
     name: "娱乐竞速模式",
-    mode: "speed"
+    mode: "speed",
+    toggled: () => {
+      const { speed } = props.gameSettings
+
+      if (!speed.tip) {
+        alert('娱乐竞速模式将会每隔一段时间自动生成一个方块，你可以通过观察背景移动察觉生成时间！')
+
+        speed.tip = true
+      }
+    }
   },
-  {
-    name: "双人交换模式",
-    mode: "mul-swap"
-  },
-  {
-    name: "残局解法模式",
-    mode: "solve"
-  }
+  // {
+  //   name: "双人交换模式",
+  //   mode: "mul-swap"
+  // },
+  // {
+  //   name: "残局解法模式",
+  //   mode: "solve"
+  // }
 ]
 
 const timeFormat = computed(() => {
@@ -62,6 +74,8 @@ watch(() => slideOptions.ind, (value, oldVal) => {
     const el = dom.value.querySelector('.GameSlider-Container')
 
     el.style.transform = `translateX(${value * -100}%) translateX(0)`
+
+    modes[value].toggled?.()
   })
 }, { immediate: true })
 
@@ -89,6 +103,7 @@ onMounted(() => {
   document.addEventListener('touchmove', (e: TouchEvent) => {
     if (!slideOptions.touched) return
 
+    e.preventDefault()
     e.stopImmediatePropagation()
 
     // 判断向左还是向右滑动 （力度达到一定值）
@@ -178,14 +193,24 @@ onMounted(() => {
     slideOptions.lastX = -1
     slideOptions.startX = -1
 
+    let _ = false
+    // 循环这个ind
+    if (totalDiff < 0) {
+      if (slideOptions.ind === modes.length - 1) _ = true
+      else slideOptions.ind = (slideOptions.ind + 1) % modes.length
+    } else {
+      if (slideOptions.ind === 0) _ = true
+      else slideOptions.ind = (slideOptions.ind - 1 + modes.length) % modes.length
+    }
+
     // 判断向左还是向右滑动 （力度达到一定值）
-    if (Math.abs(totalDiff) < 50) {
+    if (_ || Math.abs(totalDiff) < 50) {
       const el = dom.value.querySelector('.GameSlider-Container')
 
       // 计算回弹距离
       const elasticDistance = totalDiff * 0.15
 
-      el.style.transform = `translateX(${slideOptions.ind * -100}%) translateX(${(totalDiff < 0 ? 1 : -1) * elasticDistance}px)`
+      el.style.transform = `translateX(${slideOptions.ind * -100}%) translateX(${(totalDiff < 0 ? 1 : -2) * elasticDistance}px)`
 
       setTimeout(() => {
         el.style.transform = `translateX(${slideOptions.ind * -100}%) translateX(0px)`
@@ -193,12 +218,6 @@ onMounted(() => {
       return
     }
 
-    // 循环这个ind
-    if (totalDiff < 0) {
-      slideOptions.ind = (slideOptions.ind + 1) % modes.length
-    } else {
-      slideOptions.ind = (slideOptions.ind - 1 + modes.length) % modes.length
-    }
   })
 })
 

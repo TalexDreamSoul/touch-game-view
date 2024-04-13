@@ -187,7 +187,7 @@ provide('userData', userData)
 
     <audio id="music" :src="BGM" autoplay="false" preload="auto"></audio>
 
-    <Slider @restart="restart" :time="time" v-model="gameSettings.mode" />
+    <Slider @restart="restart" :gameSettings="gameSettings" :time="time" v-model="gameSettings.mode" />
     <Footer @settings="transparencyToggle" v-model="options.menu" />
   </div>
 </template>

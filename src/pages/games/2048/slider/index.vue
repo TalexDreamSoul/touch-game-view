@@ -384,6 +384,7 @@ div.GameSlider.touched.restart .GameSlider-Off span {
 
   width: 100%;
 
+  color: #000;
   transition: .25s;
   transform: translateX(-50%);
   background-color: #e6e6e685;

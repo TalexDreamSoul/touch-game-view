@@ -31,7 +31,7 @@ watch(gameSettings, (newVal) => {
 
 const options = reactive({
   nonLatest: false,
-  latest: "4133",
+  latest: "4134",
   mute: false,
   error: false,
   version: "",
@@ -160,7 +160,7 @@ const _speedBackground = computed(() => {
       // 计算y值的递减量
       let decrement = (x - 150) * 0.0066667;
       // y最小为0.5
-      return Math.max(0.5, 1 - decrement);
+      return Math.max(0.1, 1 - decrement);
     }
   }
 

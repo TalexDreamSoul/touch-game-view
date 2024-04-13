@@ -193,6 +193,11 @@ export class Game2048 {
     this._speed = 0
     this.updateUserOnlineStatus()
 
+    const audio: any = document.getElementById('music')
+    if (audio) {
+      audio.playbackRate = 1
+    }
+
     let __map = localStorage.getItem('__map')
     if (this.gameSettings.mode === 'rank' && !ignoreState && __map?.length) {
       Object.assign(this.map, JSON.parse(__map))

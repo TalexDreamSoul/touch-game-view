@@ -31,7 +31,7 @@ watch(gameSettings, (newVal) => {
 
 const options = reactive({
   nonLatest: false,
-  latest: "4134",
+  latest: "4135",
   mute: false,
   error: false,
   version: "",
@@ -145,6 +145,16 @@ watch(() => options.menu, (val) => window._ignore = val !== '游戏')
 watch(() => options.recordsMode, val => {
   if (!val) options.menu = '游戏'
 })
+watch(() => gameSettings.func.startUp, (val) => {
+  if (val) {
+    document.body.classList.remove(gameSettings.mode)
+    gameSettings.mode = 'rank'
+    document.body.classList.add(gameSettings.mode)
+    restart(true)
+  }
+
+  console.log('s', val, gameSettings)
+}, { immediate: true })
 
 // 计算 speed 模式背景流速
 const _speedBackground = computed(() => {

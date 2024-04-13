@@ -38,6 +38,8 @@ export class Game2048 {
       rotate: true,
       startUp: true
     },
+    time: -1,
+    mode: "rank",
     color: "shinning"
   })
   directions = {
@@ -158,12 +160,13 @@ export class Game2048 {
     this.state.score = 5000
   }
 
-  start(name: string) {
+  start(name: string, ignoreState: boolean = false) {
     this.name = name
+    this.gameSettings.time = new Date().getTime()
     this.updateUserOnlineStatus()
 
     let __map = localStorage.getItem('__map')
-    if (__map?.length) {
+    if (!ignoreState && __map?.length) {
       Object.assign(this.map, JSON.parse(__map))
 
       const __state = JSON.parse(localStorage.getItem('__state')!)

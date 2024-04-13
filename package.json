@@ -21,6 +21,7 @@
     "@unocss/reset": "^0.59.0-beta.1",
     "@vueuse/core": "^10.9.0",
     "@vueuse/head": "^2.0.0",
+    "better-scroll": "^2.5.1",
     "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
     "vue": "^3.4.21",

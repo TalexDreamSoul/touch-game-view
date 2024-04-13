@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
+import Slider from './slider/index.vue'
 import HeadBar from './HeadBar.vue';
 import Footer from './footer/Footer.vue';
 import Rankings from './rankings/index.vue'
 import Block from './Block.vue';
 import Settings from './Settings.vue';
-import BackFace from './BackFace.vue';
 import { Game2048, postScore, postScoreNew } from './game'
 import BGM from './BGM.mp3'
 import { useUserData } from './data';
@@ -31,7 +31,7 @@ watch(gameSettings, (newVal) => {
 
 const options = reactive({
   nonLatest: false,
-  latest: "4113",
+  latest: "4131",
   mute: false,
   error: false,
   version: "",
@@ -85,8 +85,12 @@ game.listen((_tracks: any) => {
 
 setTimeout(() => game.start(user), 200)
 
-function restart() {
-  game.start(user)
+function restart(ignoreState: boolean = false) {
+  game.start(user, ignoreState)
+}
+
+function handleREstart() {
+  restart()
 }
 
 function change() {
@@ -142,6 +146,8 @@ watch(() => options.recordsMode, val => {
   if (!val) options.menu = '游戏'
 })
 
+const time = computed(() => options.state.status === 'start' ? new Date().getTime() - gameSettings.time : 0)
+
 const userData = useUserData(options)
 provide('userData', userData)
 </script>
@@ -151,7 +157,7 @@ provide('userData', userData)
     :class="{ rankings: options.menu === '排行', startup: gameSettings.func.startUp, records: options.recordsMode, error: options.error }">
     <div class="Game-end" :class="{ show: options.state.status === 'end' }">
       <p>游戏结束</p>
-      <button @touchstart="restart" @click="restart">重新开始</button>
+      <button @touchstart="handleREstart" @click="handleREstart">重新开始</button>
     </div>
 
     <div class="Game-Container">
@@ -181,6 +187,7 @@ provide('userData', userData)
 
     <audio id="music" :src="BGM" autoplay="false" preload="auto"></audio>
 
+    <Slider @restart="restart" :time="time" v-model="gameSettings.mode" />
     <Footer @settings="transparencyToggle" v-model="options.menu" />
   </div>
 </template>
@@ -198,7 +205,7 @@ provide('userData', userData)
   top: 20px;
 
   width: 100%;
-  height: calc(90% - 20px);
+  height: calc(90% - 70px);
 }
 
 .GameWrapper {
@@ -408,6 +415,24 @@ provide('userData', userData)
   overflow: hidden;
 
   animation: hue 30s infinite linear;
+}
+
+body.speed .Game {
+  background-size: 100% 200%;
+
+  animation: speedUp 10s infinite linear;
+}
+
+@keyframes speedUp {
+  from {
+    filter: hue-rotate(0deg);
+    background-position: 0 0;
+  }
+
+  to {
+    filter: hue-rotate(360deg);
+    background-position: 0 200%;
+  }
 }
 
 @keyframes hue {

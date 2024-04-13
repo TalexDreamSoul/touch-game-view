@@ -31,7 +31,7 @@ watch(gameSettings, (newVal) => {
 
 const options = reactive({
   nonLatest: false,
-  latest: "4135",
+  latest: "4136",
   mute: false,
   error: false,
   version: "",
@@ -67,10 +67,13 @@ game.listen((_tracks: any) => {
 
   const music = document.getElementById('music') as HTMLAudioElement
   if (options.state.status === 'end') {
-    // options.state.status = 'pending'
-    if (gameSettings.func.startUp) {
-      postScore(user.value, options.state.score)
-    } else postScoreNew(user.value, options.state.score)
+
+    if (gameSettings.mode === 'rank') {
+      if (gameSettings.func.startUp) {
+        postScore(user.value, options.state.score)
+      } else postScoreNew(user.value, options.state.score)
+
+    }
 
     // 清空缓存
     localStorage.removeItem('__map');

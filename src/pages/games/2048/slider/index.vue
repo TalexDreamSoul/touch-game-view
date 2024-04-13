@@ -69,6 +69,7 @@ watch(() => slideOptions.ind, (value, oldVal) => {
     const oldMode = modes[oldVal]
 
     oldMode && document.body.classList.remove(oldMode.mode)
+    if (oldMode) emit('restart', true)
     document.body.classList.add(modes[value].mode)
 
     const el = dom.value.querySelector('.GameSlider-Container')
@@ -92,6 +93,14 @@ onMounted(() => {
 
     const { target } = e
     if (target instanceof Element && !target.classList.contains('GameMode')) return
+
+    const { modeTip } = props.gameSettings
+    if (!modeTip) {
+      alert('切换模式会导致游戏强制重新开局，并且非新手模式仅在经典排行模式下有效。')
+
+      props.gameSettings.modeTip = true
+      return
+    }
 
     slideOptions.touched = true
 
@@ -364,6 +373,8 @@ div.GameSlider.touched.restart .GameSlider-Off span {
 .GameSlider-Container {
   display: flex;
 
+  align-items: center;
+
   width: 100%;
 
   transition: .25s;
@@ -371,6 +382,9 @@ div.GameSlider.touched.restart .GameSlider-Off span {
 
 .GameMode {
   position: relative;
+  display: flex;
+
+  align-items: center;
 
   flex-shrink: 0;
 

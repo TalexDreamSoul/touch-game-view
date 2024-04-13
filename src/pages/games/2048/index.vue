@@ -31,7 +31,7 @@ watch(gameSettings, (newVal) => {
 
 const options = reactive({
   nonLatest: false,
-  latest: "4132",
+  latest: "4133",
   mute: false,
   error: false,
   version: "",
@@ -90,7 +90,7 @@ function restart(ignoreState: boolean = false) {
 }
 
 function handleREstart() {
-  restart()
+  restart(true)
 }
 
 function change() {
@@ -146,14 +146,33 @@ watch(() => options.recordsMode, val => {
   if (!val) options.menu = '游戏'
 })
 
-const time = computed(() => options.state.status === 'start' ? new Date().getTime() - gameSettings.time : 0)
+// 计算 speed 模式背景流速
+const _speedBackground = computed(() => {
+  function calculateY(x: number) {
+    if (x < 10) {
+      return 5;
+    } else if (x >= 10 && x <= 50) {
+      return 5 - (x - 10) * 0.1;
+    } else if (x >= 100 && x <= 150) {
+      return 3 - (x - 100) * 0.04;
+    } else {
+      // 对于超出以上范围的情况
+      // 计算y值的递减量
+      let decrement = (x - 150) * 0.0066667;
+      // y最小为0.5
+      return Math.max(0.5, 1 - decrement);
+    }
+  }
+
+  return calculateY(gameSettings.step)
+})
 
 const userData = useUserData(options)
 provide('userData', userData)
 </script>
 
 <template>
-  <div @click="reconnect" @touchstart="reconnect" class="Game"
+  <div @click="reconnect" @touchstart="reconnect" class="Game" :style="`--s: ${_speedBackground}s`"
     :class="{ rankings: options.menu === '排行', startup: gameSettings.func.startUp, records: options.recordsMode, error: options.error }">
     <div class="Game-end" :class="{ show: options.state.status === 'end' }">
       <p>游戏结束</p>
@@ -161,8 +180,8 @@ provide('userData', userData)
     </div>
 
     <div class="Game-Container">
-      <HeadBar :online="options.online" :historyHighest="historyHighest" :rankings="game.rankings"
-        :score="options.state.score" />
+      <HeadBar :gameSettings="gameSettings" :online="options.online" :historyHighest="historyHighest"
+        :rankings="game.rankings" :score="options.state.score" />
 
       <div class="GameWrapper">
         <div id="GameJust" class="Just">
@@ -187,7 +206,8 @@ provide('userData', userData)
 
     <audio id="music" :src="BGM" autoplay="false" preload="auto"></audio>
 
-    <Slider @restart="restart" :gameSettings="gameSettings" :time="time" v-model="gameSettings.mode" />
+    <Slider v-if="!gameSettings.func.startUp" @restart="restart" :gameSettings="gameSettings"
+      :time="parseInt(`${gameSettings.time.sec / 10}`)" v-model="gameSettings.mode" />
     <Footer @settings="transparencyToggle" v-model="options.menu" />
   </div>
 </template>
@@ -420,7 +440,7 @@ provide('userData', userData)
 body.speed .Game {
   background-size: 100% 200%;
 
-  animation: speedUp 10s infinite linear;
+  animation: speedUp var(--s) infinite linear;
 }
 
 @keyframes speedUp {

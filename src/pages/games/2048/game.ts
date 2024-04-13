@@ -40,8 +40,13 @@ export class Game2048 {
     speed: {
       tip: false
     },
-    time: -1,
+    time: {
+      start: -1,
+      sec: 0
+    },
+    step: 0,
     mode: "rank",
+    modeTip: false,
     color: "shinning"
   })
   directions = {
@@ -170,12 +175,26 @@ export class Game2048 {
   }
 
   start(name: string, ignoreState: boolean = false) {
+    // 如果没有停止先停止
+    if (this.state.status === 'start') {
+      this.state.status = 'pending'
+      setTimeout(() => {
+        this.start(name, ignoreState)
+      }, 100)
+      return
+    }
+
     this.name = name
-    this.gameSettings.time = new Date().getTime()
+    this.gameSettings.time = {
+      start: new Date().getTime(),
+      sec: 0
+    }
+    this.gameSettings.step = 0
+    this._speed = 0
     this.updateUserOnlineStatus()
 
     let __map = localStorage.getItem('__map')
-    if (!ignoreState && __map?.length) {
+    if (this.gameSettings.mode === 'rank' && !ignoreState && __map?.length) {
       Object.assign(this.map, JSON.parse(__map))
 
       const __state = JSON.parse(localStorage.getItem('__state')!)
@@ -192,27 +211,28 @@ export class Game2048 {
       }
     } else {
       this.state.status = 'start'
-      if (!this.gameSettings.func.startUp) {
+      if (this.gameSettings.mode === 'rank' && !this.gameSettings.func.startUp) {
         this.startWithInit()
-        return
+      } else {
+        Object.assign(this.map, [
+          [0, 0, 0, 0],
+          [0, 0, 0, 0],
+          [0, 0, 0, 0],
+          [0, 0, 0, 0],
+        ])
+
+        // 随机抽取两个格子赋值为 2
+        var { x, y } = this._randomSlot();
+        this.map[x][y] = 2;
+
+        var { x, y } = this._randomSlot();
+        this.map[x][y] = 2;
+
+        this.state.score = 0
       }
-
-      Object.assign(this.map, [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-      ])
-
-      // 随机抽取两个格子赋值为 2
-      var { x, y } = this._randomSlot();
-      this.map[x][y] = 2;
-
-      var { x, y } = this._randomSlot();
-      this.map[x][y] = 2;
-
-      this.state.score = 0
     }
+
+    this.timing()
 
   }
 
@@ -313,32 +333,35 @@ export class Game2048 {
 
     // 30%的概率生成 4
 
-    // 分数达到 10000 分，加大难度
-    if (this.state.score >= 15000) {
-      this.map[obj.x][obj.y] =
-        Math.random() <= 0.95 ? 4 : 2
+    // 排行模式才滑动生成
+    if (this.gameSettings.mode === 'rank') {
+      // 分数达到 10000 分，加大难度
+      if (this.state.score >= 15000) {
+        this.map[obj.x][obj.y] =
+          Math.random() <= 0.95 ? 4 : 2
 
-      if (new Date().getTime() - this._move >= 1000 * 15) {
-        if (Math.random() <= 0.005 || Math.random() >= 0.095) {
-          this._move = new Date().getTime()
+        if (new Date().getTime() - this._move >= 1000 * 15) {
+          if (Math.random() <= 0.005 || Math.random() >= 0.095) {
+            this._move = new Date().getTime()
 
-          // 随机生成0或1
-          const random = Math.round(Math.random())
-          this.exchange(random, Math.random() >= 0.5)
+            // 随机生成0或1
+            const random = Math.round(Math.random())
+            this.exchange(random, Math.random() >= 0.5)
+          }
         }
+
+      } else if (this.state.score >= 10000) {
+        this.map[obj.x][obj.y] =
+          Math.random() <= 0.75 ? 4 : 2
+
+      } else if (this.state.score >= 5000) {
+        this.map[obj.x][obj.y] =
+          Math.random() <= 0.5 ? 4 : 2
+
+      } else {
+        this.map[obj.x][obj.y] =
+          Math.random() <= 0.25 ? 4 : 2
       }
-
-    } else if (this.state.score >= 10000) {
-      this.map[obj.x][obj.y] =
-        Math.random() <= 0.75 ? 4 : 2
-
-    } else if (this.state.score >= 5000) {
-      this.map[obj.x][obj.y] =
-        Math.random() <= 0.5 ? 4 : 2
-
-    } else {
-      this.map[obj.x][obj.y] =
-        Math.random() <= 0.25 ? 4 : 2
     }
 
     this.updateUserOnlineStatus()
@@ -347,6 +370,7 @@ export class Game2048 {
       this.playBoom()
     }
 
+    this.gameSettings.step += 1
     return tracks
   }
 
@@ -544,6 +568,92 @@ export class Game2048 {
 
       callback(res)
     })
+  }
+
+  timing() {
+    if (this.state.status !== 'start') return
+
+    this.gameSettings.time.sec += 1
+
+    if (this.gameSettings.mode === 'speed') this.speedMode()
+
+    setTimeout(() => {
+      this.timing()
+    }, 100)
+  }
+
+  _speed: number = 0
+
+  speedMode() {
+    function calculateY(x: number) {
+      if (x < 10) {
+        return 5;
+      } else if (x >= 10 && x <= 50) {
+        return 5 - (x - 10) * 0.1;
+      } else if (x >= 100 && x <= 150) {
+        return 3 - (x - 100) * 0.04;
+      } else {
+        // 对于超出以上范围的情况
+        // 计算y值的递减量
+        let decrement = (x - 150) * 0.0066667;
+        // y最小为0.5
+        return Math.max(0.5, 1 - decrement);
+      }
+    }
+
+    const time = calculateY(this.gameSettings.step)
+    if (this._speed < time * 10) {
+      this._speed += 1
+      return
+    }
+
+    const audio: any = document.getElementById('music')
+    if (audio) {
+      if (this.gameSettings.step >= 50) {
+        audio.playbackRate = 1.5
+      } else if (this.gameSettings.step >= 100) {
+        audio.playbackRate = 2
+      } else if (this.gameSettings.step >= 150) {
+        audio.playbackRate = 3
+      } else if (this.gameSettings.step >= 200) {
+        audio.playbackRate = 5
+      }
+    }
+
+    this._speed = 0
+
+    const rows = this.map.length
+    const cols = this.map[0].length
+
+    let obj = this._randomSlot()
+    let amo = 0
+
+    while (this.map[obj.x][obj.y] !== 0) {
+      if (amo >= rows * cols) {
+
+        // 遍历图 如果有是0的点那么继续random
+        for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < cols; j++) {
+            if (this.map[i][j] === 0) {
+              obj = { x: i, y: j }
+
+              this.map[obj.x][obj.y] = Math.random() < 0.3 ? 4 : 2
+
+              return
+            }
+          }
+        }
+
+        this.state.status = "end"
+        return null
+      }
+
+      obj = this._randomSlot()
+      amo += 1;
+    }
+
+    // 30%的概率生成4
+    this.map[obj.x][obj.y] = Math.random() < 0.3 ? 4 : 2
   }
 }
 

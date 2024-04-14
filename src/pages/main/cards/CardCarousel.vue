@@ -45,7 +45,7 @@ const props = defineProps<{
   font-family: sans-serif;
 
   border-radius: 8px;
-  background-color: #0f0f0fA0;
+  background-color: #0f0f0fE0;
   backdrop-filter: blur(18px) saturate(180%);
 }
 

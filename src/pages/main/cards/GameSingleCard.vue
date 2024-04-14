@@ -167,7 +167,7 @@ function handleClick() {
   position: absolute;
   top: 5px;
   left: 5px;
-  width: 190px;
+  width: 170px;
   height: 240px;
   z-index: 2;
   background: rgba(255, 255, 255, .95);

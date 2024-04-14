@@ -5,6 +5,7 @@ import PatternWay from './game/PatternWay.vue';
 import PatternCat from './game/PatternCat.vue';
 import PatternBat from './game/PatternBat.vue';
 import PatternDice from './game/PatternDice.vue';
+import PatternTang from './game/PatternTang.vue';
 
 const props = defineProps<{
   modelValue?: boolean,
@@ -20,6 +21,14 @@ const games = [
       router.push(`/games/2048`)
     },
     comp: Pattern2048
+  },
+  {
+    name: '唐了个唐',
+    desc: "你的智商还不够玩...",
+    comp: PatternTang,
+    click: () => {
+      router.push('/games/tang')
+    }
   },
   {
     name: '拼图华容道',

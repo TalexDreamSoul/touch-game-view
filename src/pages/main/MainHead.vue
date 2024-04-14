@@ -37,6 +37,9 @@ const userInfo = ref({
   qq: ''
 })
 
+// @ts-ignore
+window.$userInfo = userInfo
+
 async function getData() {
   const res = await getUserInfo(name.value)
   if (res.message) {
@@ -118,6 +121,12 @@ const avatar = computed(() => {
   font-weight: 500;
   text-transform: uppercase;
 }
+
+/* .section_form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+} */
 </style>
 
 <style>

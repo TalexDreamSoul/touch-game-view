@@ -1,54 +1,20 @@
 <script setup lang="ts">
+import MainHead from './main/MainHead.vue'
+import MainLayer from './main/MainLayer.vue';
 defineOptions({
   name: 'IndexPage',
 })
-const user = useUserStore()
-const name = ref(user.savedName)
 
 const router = useRouter()
-function go() {
-  router.push(`/games/2048`)
-  // if (name.value)
-  //   router.push(`/hi/${encodeURIComponent(name.value)}`)
-}
-
-const { t } = useI18n()
 </script>
 
 <template>
-  <div>
-    <!-- <div text-4xl>
-      <div i-carbon-campsite inline-block />
+  <div class="Index">
+    <div class="Index-Bg">
+      <MainHead />
     </div>
-    <p>
-      <a rel="noreferrer" href="https://github.com/antfu/vitesse" target="_blank">
-        Vitesse
-      </a>
-    </p>
-    <p>
-      <em text-sm opacity-75>{{ t('intro.desc') }}</em>
-    </p>
 
-    <div py-4 />
-
-    <TheInput
-      v-model="name"
-      :placeholder="t('intro.whats-your-name')"
-      autocomplete="false"
-      @keydown.enter="go"
-    />
-    <label class="hidden" for="input">{{ t('intro.whats-your-name') }}</label> -->
-
-    <div>
-      <button
-        m-3 text-sm btn
-        :disabled="!name"
-        @click="go"
-        @touchstart="go"
-      >
-        {{ t('button.go') }}
-      </button>
-    </div>
+    <MainLayer />
   </div>
 </template>
 
@@ -56,3 +22,26 @@ const { t } = useI18n()
 meta:
   layout: home
 </route>
+
+<style>
+.Index-Bg {
+  z-index: 10000;
+  position: sticky;
+
+  top: 0;
+
+  width: 100%;
+  height: 35%;
+
+  background: linear-gradient(to top, transparent, #fff1fb50 30%, #aacbf9)
+}
+
+.Index {
+  position: absolute;
+
+  width: 100%;
+  height: 100%;
+
+  overflow-y: scroll;
+}
+</style>

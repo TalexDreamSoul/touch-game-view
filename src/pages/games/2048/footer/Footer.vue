@@ -34,7 +34,7 @@ const buttons = [
   },
   {
     icon: SettingSvg,
-    text: '关于',
+    text: '设置',
     click: () => {
       emits('settings', true)
     },

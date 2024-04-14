@@ -1,0 +1,7 @@
+<svg height="100%" width="100%">
+  <clipPath id="wave10">
+    <path d="M 0,0 356,0 356,130 0,130" stroke="black" fill="transparent" />
+    <path d="M 0 130 C 175 155 175 155 356 130" stroke="black" fill="transparent" />
+    <path d="M 152 143 L 176 153 L 178 153 L 202 143" stroke="black" fill="transparent" />
+  </clipPath>
+</svg>

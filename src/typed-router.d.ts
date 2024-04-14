@@ -35,6 +35,17 @@ declare module 'vue-router/auto-routes' {
     '/games/2048/slider/index_old': RouteRecordInfo<'/games/2048/slider/index_old', '/games/2048/slider/index_old', Record<never, never>, Record<never, never>>,
     '/games/frog/': RouteRecordInfo<'/games/frog/', '/games/frog', Record<never, never>, Record<never, never>>,
     '/hi/[name]': RouteRecordInfo<'/hi/[name]', '/hi/:name', { name: ParamValue<true> }, { name: ParamValue<false> }>,
+    '/main/button/MenuButton': RouteRecordInfo<'/main/button/MenuButton', '/main/button/MenuButton', Record<never, never>, Record<never, never>>,
+    '/main/cards/CardCarousel': RouteRecordInfo<'/main/cards/CardCarousel', '/main/cards/CardCarousel', Record<never, never>, Record<never, never>>,
+    '/main/cards/game/Pattern2048': RouteRecordInfo<'/main/cards/game/Pattern2048', '/main/cards/game/Pattern2048', Record<never, never>, Record<never, never>>,
+    '/main/cards/game/PatternBat': RouteRecordInfo<'/main/cards/game/PatternBat', '/main/cards/game/PatternBat', Record<never, never>, Record<never, never>>,
+    '/main/cards/game/PatternCat': RouteRecordInfo<'/main/cards/game/PatternCat', '/main/cards/game/PatternCat', Record<never, never>, Record<never, never>>,
+    '/main/cards/game/PatternDice': RouteRecordInfo<'/main/cards/game/PatternDice', '/main/cards/game/PatternDice', Record<never, never>, Record<never, never>>,
+    '/main/cards/game/PatternWay': RouteRecordInfo<'/main/cards/game/PatternWay', '/main/cards/game/PatternWay', Record<never, never>, Record<never, never>>,
+    '/main/cards/GameCards': RouteRecordInfo<'/main/cards/GameCards', '/main/cards/GameCards', Record<never, never>, Record<never, never>>,
+    '/main/cards/GameSingleCard': RouteRecordInfo<'/main/cards/GameSingleCard', '/main/cards/GameSingleCard', Record<never, never>, Record<never, never>>,
+    '/main/MainHead': RouteRecordInfo<'/main/MainHead', '/main/MainHead', Record<never, never>, Record<never, never>>,
+    '/main/MainLayer': RouteRecordInfo<'/main/MainLayer', '/main/MainLayer', Record<never, never>, Record<never, never>>,
     '/README': RouteRecordInfo<'/README', '/README', Record<never, never>, Record<never, never>>,
   }
 }

@@ -199,9 +199,9 @@ function handleResurrection() {
     } else {
       alert('点击确定后立即复活！')
 
+      game.state.status = 'start'
       game.resurrection()
 
-      game.state.status = 'start'
     }
   })
 }

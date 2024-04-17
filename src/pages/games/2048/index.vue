@@ -10,6 +10,7 @@ import { Game2048, postScore, postScoreNew } from './game'
 import BGM from './BGM.mp3'
 import { useUserData } from './data';
 import { angle } from './orientation'
+import { tryAward } from '~/components/award/awards'
 
 defineOptions({
   name: '2048 Game',
@@ -31,7 +32,7 @@ watch(gameSettings, (newVal) => {
 
 const options = reactive({
   nonLatest: false,
-  latest: "4141",
+  latest: "4171",
   mute: false,
   error: false,
   version: "",
@@ -62,6 +63,7 @@ const historyHighest = computed(() => {
   return Math.max(options.state.score, _user[0].score)
 })
 
+const canResurrection = ref<boolean>(false)
 game.listen((_tracks: any) => {
   tracks.value = _tracks
 
@@ -74,6 +76,8 @@ game.listen((_tracks: any) => {
       } else postScoreNew(user.value, options.state.score)
 
     }
+
+    canResurrection.value = game.canResurrection()
 
     // 清空缓存
     localStorage.removeItem('__map');
@@ -182,14 +186,36 @@ const _speedBackground = computed(() => {
 
 const userData = useUserData(options)
 provide('userData', userData)
+
+function handleResurrection() {
+  tryAward('words', "免费复活一次！", {
+    cnt: 3,
+  }).then(res => {
+    if (!res) {
+      game.gameSettings.$.resurrection = true
+
+      alert('你无法复活！')
+    } else {
+      alert('点击确定后立即复活！')
+
+      game.resurrection()
+
+      game.state.status = 'start'
+    }
+  })
+}
 </script>
 
 <template>
   <div @click="reconnect" @touchstart="reconnect" class="Game" :style="`--s: ${_speedBackground}s`"
-    :class="{ rankings: options.menu === '排行', startup: gameSettings.func.startUp, records: options.recordsMode, error: options.error }">
+    :class="{ rankings: options.menu === '排行', startup: gameSettings.func.startUp, records: options.recordsMode }">
     <div class="Game-end" :class="{ show: options.state.status === 'end' }">
       <p>游戏结束</p>
-      <button @touchstart="handleREstart" @click="handleREstart">重新开始</button>
+
+      <div class="Game-end-button">
+        <button @touchstart="handleREstart" @click="handleREstart">重新开始</button>
+        <button v-if="canResurrection" @touchstart="handleResurrection" @click="handleResurrection">立即复活</button>
+      </div>
     </div>
 
     <div class="Game-Container">
@@ -226,6 +252,12 @@ provide('userData', userData)
 </template>
 
 <style>
+.Game-end-button {
+  display: flex;
+
+  gap: 1rem;
+}
+
 .Game-Container {
   position: absolute;
   padding: 1rem 0;
@@ -351,27 +383,6 @@ provide('userData', userData)
   height: 100%;
 
   backface-visibility: hidden;
-}
-
-.Game.error::before {
-  z-index: 100000;
-  content: "无法连接至远程服务器！";
-  position: absolute;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  left: 0;
-  top: 0;
-
-  width: 100%;
-  height: 100%;
-  line-height: 100vh;
-
-  color: red;
-  font-size: 2rem;
-  background: #ee111150;
 }
 
 .Game-Info {

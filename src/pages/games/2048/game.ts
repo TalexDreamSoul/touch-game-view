@@ -44,6 +44,9 @@ export class Game2048 {
       start: -1,
       sec: 0
     },
+    $: {
+      resurrection: false
+    },
     step: 0,
     mode: "rank",
     modeTip: false,
@@ -72,6 +75,29 @@ export class Game2048 {
     this.onlinePlayers = reactive([])
 
     // console.log("Game 2048");
+  }
+
+  canResurrection() {
+    // 必须没有复活过 并且 地图中有2或者4
+    if (this.gameSettings.$.resurrection) return false
+    return this.map
+      .flat().filter
+      ((v: number) => v === 2 || v === 4).length > 0
+  }
+
+  resurrection() {
+    if (this.gameSettings.$.resurrection) return
+
+    // 把所有的2 4都删除
+    this.gameSettings.$.resurrection = true
+
+    this.map.forEach((row: number[], i: number) => {
+      row.forEach((v: number, j: number) => {
+        if (v === 2 || v === 4) {
+          this.map[i][j] = 0
+        }
+      })
+    })
   }
 
   _randomSlot() {
@@ -216,6 +242,7 @@ export class Game2048 {
       }
     } else {
       this.state.status = 'start'
+      this.gameSettings.$.resurrection = false
       if (this.gameSettings.mode === 'rank' && !this.gameSettings.func.startUp) {
         this.startWithInit()
       } else {

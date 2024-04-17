@@ -7,6 +7,10 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    Failure: typeof import('./components/failure/GameFailure.vue')['default']
+    GameAward: typeof import('./components/award/GameAward.vue')['default']
+    GameFailure: typeof import('./components/failure/GameFailure.vue')['default']
+    LineSelect: typeof import('./components/award/LineSelect.vue')['default']
     README: typeof import('./components/README.md')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
@@ -14,5 +18,6 @@ declare module 'vue' {
     TheFooter: typeof import('./components/TheFooter.vue')['default']
     TheInput: typeof import('./components/TheInput.vue')['default']
     TouchSlider: typeof import('./components/TouchSlider.vue')['default']
+    WordAward: typeof import('./components/award/WordAward.vue')['default']
   }
 }

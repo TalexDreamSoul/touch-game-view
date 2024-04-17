@@ -23,7 +23,7 @@ const games = [
     comp: Pattern2048
   },
   {
-    name: '唐了个唐',
+    name: '闲了个闲',
     desc: "你的智商还不够玩...",
     comp: PatternTang,
     click: () => {

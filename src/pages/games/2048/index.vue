@@ -32,7 +32,7 @@ watch(gameSettings, (newVal) => {
 
 const options = reactive({
   nonLatest: false,
-  latest: "4171",
+  latest: "4172",
   mute: false,
   error: false,
   version: "",
@@ -193,6 +193,7 @@ function handleResurrection() {
   }).then(res => {
     if (!res) {
       game.gameSettings.$.resurrection = true
+      canResurrection.value = false
 
       alert('你无法复活！')
     } else {

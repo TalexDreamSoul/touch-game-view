@@ -98,6 +98,8 @@ export class Game2048 {
         }
       })
     })
+
+    this.timing()
   }
 
   _randomSlot() {

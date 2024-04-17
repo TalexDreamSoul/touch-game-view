@@ -32,7 +32,7 @@ watch(gameSettings, (newVal) => {
 
 const options = reactive({
   nonLatest: false,
-  latest: "4173",
+  latest: "4174",
   mute: false,
   error: false,
   version: "",
@@ -70,13 +70,6 @@ game.listen((_tracks: any) => {
   const music = document.getElementById('music') as HTMLAudioElement
   if (options.state.status === 'end') {
 
-    if (gameSettings.mode === 'rank') {
-      if (gameSettings.func.startUp) {
-        postScore(user.value, options.state.score)
-      } else postScoreNew(user.value, options.state.score)
-
-    }
-
     canResurrection.value = game.canResurrection()
 
     // 清空缓存
@@ -97,6 +90,14 @@ function restart(ignoreState: boolean = false) {
 }
 
 function handleREstart() {
+
+  if (gameSettings.mode === 'rank') {
+    if (gameSettings.func.startUp) {
+      postScore(user.value, options.state.score)
+    } else postScoreNew(user.value, options.state.score)
+
+  }
+
   restart(true)
 }
 

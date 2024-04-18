@@ -45,7 +45,7 @@ export class Game2048 {
       sec: 0
     },
     $: {
-      resurrection: false
+      resurrection: 0
     },
     step: 0,
     mode: "rank",
@@ -78,18 +78,19 @@ export class Game2048 {
   }
 
   canResurrection() {
-    // 必须没有复活过 并且 地图中有2或者4
-    if (this.gameSettings.$.resurrection) return false
+    // 地图中有2或者4
+    // if (this.gameSettings.$.resurrection) return false
     return this.map
       .flat().filter
       ((v: number) => v === 2 || v === 4).length > 0
   }
 
   resurrection() {
-    if (this.gameSettings.$.resurrection) return
+    if ( !this.canResurrection() ) return
+    // if (this.gameSettings.$.resurrection) return
 
     // 把所有的2 4都删除
-    this.gameSettings.$.resurrection = true
+    this.gameSettings.$.resurrection += 1
 
     this.map.forEach((row: number[], i: number) => {
       row.forEach((v: number, j: number) => {
@@ -244,7 +245,7 @@ export class Game2048 {
       }
     } else {
       this.state.status = 'start'
-      this.gameSettings.$.resurrection = false
+      this.gameSettings.$.resurrection = 0
       if (this.gameSettings.mode === 'rank' && !this.gameSettings.func.startUp) {
         this.startWithInit()
       } else {

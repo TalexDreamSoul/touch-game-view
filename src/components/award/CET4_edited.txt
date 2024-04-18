@@ -647,7 +647,7 @@ chill [t∫il] vt.使变冷 n.寒冷
 chimney [ˈt∫imni] n.烟囱，烟筒；玻璃罩
 chin [t∫in] n.颏，下巴
 China [ˈt∫ainə] n.中国
-china n.瓷器，瓷料
+china [ˈt∫ainə] n.瓷器，瓷料
 Chinese [ˈt∫aiˈniːz] a.中国的 n.中国人
 chocolate [ˈt∫ɔkəlit] n.巧克力；巧克力糖
 choice [t∫ɔis] n.选择，抉择
@@ -2284,7 +2284,7 @@ logic [ˈlɔdʒik] n.逻辑，推理；逻辑性
 logical [ˈlɔdʒikəl] a.逻辑的；符合逻辑的
 lonely [ˈləunli] a.孤独的；荒凉的
 long [lɔŋ] a.长的；远的 ad.长久
-long vi.渴望，极想念
+long [lɔŋ] vi.渴望，极想念
 look [luk] vi.看，显得 n.看
 loop [luːp] n.圈，环，环孔
 loose [luːs] a.松的；宽松的
@@ -3476,7 +3476,7 @@ saving [ˈseiviŋ] n.搭救；节约；存款
 saw [sɔː] n.锯子 vt.锯，锯开
 say [sei] vt.说；说明；比如说
 scale [skeil] n.天平，磅秤，秤
-scale n.标度；比例；大小
+scale [skeil] n.标度；比例；大小
 scan [skæn] vt.细看；浏览；扫描
 scar [skɑː] n.伤疤，伤痕；创伤
 scarce [skeəs] a.缺乏的；希有的
@@ -4589,7 +4589,7 @@ writer [ˈraitə] n.作者，作家，文学家
 writing [ˈraitiŋ] n.书写，写；著作
 wrong [rɔŋ] a.错误的 ad.错，不对
 X-ray [ˈeksˈrei] n.X 射线，X 光
-yard n.院子，庭院；场地
+yard [jɑːd] n.院子，庭院；场地
 yard [jɑːd] n.码
 yawn [jɔːn] vi.打呵欠 n.呵欠
 year [jəː] n.年；年年

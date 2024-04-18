@@ -189,20 +189,22 @@ const userData = useUserData(options)
 provide('userData', userData)
 
 function handleResurrection() {
+  // 随着复活次数增加 题目增加
+  // 0: 3 / 1: 5 / 2 : 7 / 3: 9
+  const cnt = gameSettings.$.resurrection
+  const level = Math.max(1, Math.floor(cnt / .5))
+  const step = level * 2 + 1
+
   tryAward('words', "免费复活一次！", {
-    cnt: 3,
+    cnt: step,
   }).then(res => {
     if (!res) {
-      game.gameSettings.$.resurrection = true
-      canResurrection.value = false
-
       alert('你无法复活！')
     } else {
       alert('点击确定后立即复活！')
 
       game.state.status = 'start'
       game.resurrection()
-
     }
   })
 }

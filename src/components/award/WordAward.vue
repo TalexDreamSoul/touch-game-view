@@ -11,7 +11,7 @@ const props = defineProps<{
 // 解析这个wordsCET文件 随机抽取4行
 const words = WordsCET.split('\n').filter(Boolean)
 // 随机抽取4行
-const randomWords = words.sort(() => Math.random() - 0.5).slice(0, 4)
+const randomWords = words.sort(() => Math.random() - 0.5).filter(item => item.indexOf('[') !== -1).slice(0, 4)
 
 // 每一行单词是 单词 [音标] 词性意思
 // 比如 man [man] n.男人；人；人类

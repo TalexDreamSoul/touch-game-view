@@ -7,7 +7,7 @@ defineOptions({
 })
 
 const offline = ref(false)
-const baseUrl = 'https://game.tagzxia.com'
+const baseUrl = 'https://api.game.tagzxia.com'
 
 function getStatus() {
   // 向 baseUrl/status 发送 get

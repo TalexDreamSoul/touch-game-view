@@ -1,4 +1,4 @@
-const baseUrl = 'https://game.tagzxia.com'
+const baseUrl = 'https://api.game.tagzxia.com'
 
 export function getUserInfo(user: string) {
   return new Promise((resolve, reject) => {

@@ -126,7 +126,7 @@ function change() {
 }
 
 // const baseUrl = 'https://124.223.71.129:9981'
-const baseUrl = 'https://game.tagzxia.com'
+const baseUrl = 'https://api.game.tagzxia.com'
 
 function getStatus() {
   // 向 baseUrl/status 发送 get

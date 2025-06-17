@@ -111,8 +111,8 @@ export class Game2048 {
     const rows = this.map.length
     const cols = this.map[0].length
 
-    let x = Math.floor(Math.random() * rows)
-    let y = Math.floor(Math.random() * cols)
+    const x = Math.floor(Math.random() * rows)
+    const y = Math.floor(Math.random() * cols)
 
     return { x, y }
   }
@@ -234,7 +234,7 @@ export class Game2048 {
       audio.playbackRate = 1
     }
 
-    let __map = localStorage.getItem('__map')
+    const __map = localStorage.getItem('__map')
     if (this.gameSettings.mode === 'rank' && !ignoreState && __map?.length) {
       Object.assign(this.map, JSON.parse(__map))
 
@@ -508,8 +508,8 @@ export class Game2048 {
 
     // 根据起点终点返回方向 1向上 2向下 3向左 4向右 0未滑动
     function getDirection(startx: number, starty: number, endx: number, endy: number) {
-      let angx = endx - startx
-      let angy = endy - starty
+      const angx = endx - startx
+      const angy = endy - starty
       let result = 0
 
       // 如果滑动距离太短
@@ -517,7 +517,7 @@ export class Game2048 {
         return result
       }
 
-      let angle = getAngle(angx, angy)
+      const angle = getAngle(angx, angy)
       if (angle >= -135 && angle <= -45) {
         result = 1
       }
@@ -559,7 +559,7 @@ export class Game2048 {
       let endx, endy
       endx = e.changedTouches[0].pageX
       endy = e.changedTouches[0].pageY
-      let direction = getDirection(startx, starty, endx, endy)
+      const direction = getDirection(startx, starty, endx, endy)
 
       let res
 
@@ -665,7 +665,7 @@ export class Game2048 {
       else {
         // 对于超出以上范围的情况
         // 计算y值的递减量
-        let decrement = (x - 150) * 0.0066667
+        const decrement = (x - 150) * 0.0066667
         // y最小为0.5
         return Math.max(0.1, 1 - decrement)
       }
@@ -730,7 +730,7 @@ export class Game2048 {
 }
 
 // const baseUrl = 'https://124.223.71.129:9981'
-const baseUrl = 'https://game.tagzxia.com'
+const baseUrl = 'https://api.game.tagzxia.com'
 
 let timer: any
 

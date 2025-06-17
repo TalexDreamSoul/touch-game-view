@@ -1,31 +1,32 @@
 <script setup lang="ts">
 import MainHead from './main/MainHead.vue'
-import MainLayer from './main/MainLayer.vue';
+import MainLayer from './main/MainLayer.vue'
+
 defineOptions({
   name: 'IndexPage',
 })
 
 const offline = ref(false)
-const baseUrl = 'https://gameends.tagzxia.com:9981'
+const baseUrl = 'https://game.tagzxia.com'
 
 function getStatus() {
   // 向 baseUrl/status 发送 get
   fetch(`${baseUrl}/status`)
     .then(res => res.json())
-    .then(data => {
+    .then((data) => {
       offline.value = !data?.status
     })
-    .catch(err => {
+    .catch((err) => {
       offline.value = true
     })
 }
 
-
 function reconnect(e: Event) {
-  if (!offline.value) return
+  if (!offline.value)
+    return
 
-  e.preventDefault();
-  e.stopImmediatePropagation();
+  e.preventDefault()
+  e.stopImmediatePropagation()
 
   getStatus()
 }
@@ -33,7 +34,7 @@ getStatus()
 </script>
 
 <template>
-  <div @click="reconnect" :class="{ offline }" class="Index">
+  <div :class="{ offline }" class="Index" @click="reconnect">
     <div class="Index-Bg">
       <MainHead />
     </div>
@@ -50,7 +51,7 @@ meta:
 <style>
 .Index.offline::before {
   z-index: 100000;
-  content: "无法连接至远程服务器！";
+  content: '无法连接至远程服务器！';
   position: absolute;
 
   display: flex;
@@ -79,7 +80,7 @@ meta:
   height: 35%;
 
   pointer-events: none;
-  background: linear-gradient(to top, transparent, #fff1fb50 30%, #aacbf9)
+  background: linear-gradient(to top, transparent, #fff1fb50 30%, #aacbf9);
 }
 
 .Index {

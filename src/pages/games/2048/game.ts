@@ -2,9 +2,9 @@ import { reactive } from 'vue'
 import BoomMp3 from './boom.mp3'
 import Failed from './FAIELD.mp3'
 
-export type Direction = "up" | "down" | "left" | "right"
+export type Direction = 'up' | 'down' | 'left' | 'right'
 
-export type Status = "start" | "pending" | "end"
+export type Status = 'start' | 'pending' | 'end'
 
 export interface Track {
   from: [number, number]
@@ -31,32 +31,33 @@ export class Game2048 {
     },
     vibrate: {
       slide: true,
-      failed: true
+      failed: true,
     },
     func: {
       rotate: true,
-      startUp: true
+      startUp: true,
     },
     speed: {
-      tip: false
+      tip: false,
     },
     time: {
       start: -1,
-      sec: 0
+      sec: 0,
     },
     $: {
-      resurrection: 0
+      resurrection: 0,
     },
     step: 0,
-    mode: "rank",
+    mode: 'rank',
     modeTip: false,
-    color: "shinning"
+    color: 'shinning',
   })
+
   directions = {
-    'up': (i: number, j: number) => [i + 1, j],
-    'down': (i: number, j: number) => [i - 1, j],
-    'left': (i: number, j: number) => [i, j + 1],
-    'right': (i: number, j: number) => [i, j - 1],
+    up: (i: number, j: number) => [i + 1, j],
+    down: (i: number, j: number) => [i - 1, j],
+    left: (i: number, j: number) => [i, j + 1],
+    right: (i: number, j: number) => [i, j - 1],
   }
 
   constructor() {
@@ -67,7 +68,7 @@ export class Game2048 {
       [0, 0, 0, 0],
     ])
     this.state = reactive({
-      status: "pending",
+      status: 'pending',
       score: 0,
     })
     this.rankings = ref([])
@@ -81,12 +82,15 @@ export class Game2048 {
     // 地图中有2或者4
     // if (this.gameSettings.$.resurrection) return false
     return this.map
-      .flat().filter
-      ((v: number) => v === 2 || v === 4).length > 0
+      .flat()
+      .filter
+      ((v: number) => v === 2 || v === 4)
+      .length > 0
   }
 
   resurrection() {
-    if ( !this.canResurrection() ) return
+    if (!this.canResurrection())
+      return
     // if (this.gameSettings.$.resurrection) return
 
     // 把所有的2 4都删除
@@ -107,10 +111,10 @@ export class Game2048 {
     const rows = this.map.length
     const cols = this.map[0].length
 
-    let x = Math.floor(Math.random() * rows);
-    let y = Math.floor(Math.random() * cols);
+    let x = Math.floor(Math.random() * rows)
+    let y = Math.floor(Math.random() * cols)
 
-    return { x, y };
+    return { x, y }
   }
 
   isGameOver(board: any) {
@@ -118,7 +122,7 @@ export class Game2048 {
     for (let i = 0; i < board.length; i++) {
       for (let j = 0; j < board[i].length; j++) {
         if (board[i][j] === 0) {
-          return false; // 存在空格，游戏未结束
+          return false // 存在空格，游戏未结束
         }
       }
     }
@@ -128,26 +132,26 @@ export class Game2048 {
       for (let j = 0; j < board[i].length; j++) {
         // 检查上方方块
         if (i > 0 && board[i][j] === board[i - 1][j]) {
-          return false; // 存在可合并的相邻方块，游戏未结束
+          return false // 存在可合并的相邻方块，游戏未结束
         }
         // 检查下方方块
         if (i < board.length - 1 && board[i][j] === board[i + 1][j]) {
-          return false; // 存在可合并的相邻方块，游戏未结束
+          return false // 存在可合并的相邻方块，游戏未结束
         }
         // 检查左侧方块
         if (j > 0 && board[i][j] === board[i][j - 1]) {
-          return false; // 存在可合并的相邻方块，游戏未结束
+          return false // 存在可合并的相邻方块，游戏未结束
         }
         // 检查右侧方块
         if (j < board[i].length - 1 && board[i][j] === board[i][j + 1]) {
-          return false; // 存在可合并的相邻方块，游戏未结束
+          return false // 存在可合并的相邻方块，游戏未结束
         }
       }
     }
 
     // 如果没有空格，且没有可以合并的相邻方块，游戏结束
 
-    return true;
+    return true
   }
 
   refreshRankings() {
@@ -157,7 +161,8 @@ export class Game2048 {
   lastUpdate = -1
 
   updateUserOnlineStatus() {
-    if (new Date().getTime() - this.lastUpdate < 1000 * 15) return
+    if (new Date().getTime() - this.lastUpdate < 1000 * 15)
+      return
     this.lastUpdate = new Date().getTime()
 
     updateOnlineStatus(this.name.value!)
@@ -166,7 +171,6 @@ export class Game2048 {
       Object.assign(this.onlinePlayers, res.online_users)
     })
     this.refreshRankings()
-
   }
 
   startWithInit() {
@@ -175,28 +179,31 @@ export class Game2048 {
         [4, 0, 0, 2],
         [0, 0, 2, 16],
         [0, 2, 16, 128],
-        [2, 16, 128, 512]
+        [2, 16, 128, 512],
       ])
-    } else if (Math.random() < 0.5) {
+    }
+    else if (Math.random() < 0.5) {
       Object.assign(this.map, [
         [512, 128, 16, 2],
         [128, 16, 2, 0],
         [16, 2, 0, 0],
-        [2, 0, 0, 4]
+        [2, 0, 0, 4],
       ])
-    } else if (Math.random() < 0.5) {
+    }
+    else if (Math.random() < 0.5) {
       Object.assign(this.map, [
         [2, 0, 0, 4],
         [16, 2, 0, 0],
         [128, 16, 2, 0],
-        [512, 128, 16, 2]
+        [512, 128, 16, 2],
       ])
-    } else {
+    }
+    else {
       Object.assign(this.map, [
         [2, 16, 128, 512],
         [0, 2, 16, 128],
         [0, 0, 2, 16],
-        [4, 0, 0, 2]
+        [4, 0, 0, 2],
       ])
     }
 
@@ -216,7 +223,7 @@ export class Game2048 {
     this.name = name
     this.gameSettings.time = {
       start: new Date().getTime(),
-      sec: 0
+      sec: 0,
     }
     this.gameSettings.step = 0
     this._speed = 0
@@ -243,12 +250,14 @@ export class Game2048 {
         this.start(name)
         return
       }
-    } else {
+    }
+    else {
       this.state.status = 'start'
       this.gameSettings.$.resurrection = 0
       if (this.gameSettings.mode === 'rank' && !this.gameSettings.func.startUp) {
         this.startWithInit()
-      } else {
+      }
+      else {
         Object.assign(this.map, [
           [0, 0, 0, 0],
           [0, 0, 0, 0],
@@ -257,18 +266,17 @@ export class Game2048 {
         ])
 
         // 随机抽取两个格子赋值为 2
-        var { x, y } = this._randomSlot();
-        this.map[x][y] = 2;
+        var { x, y } = this._randomSlot()
+        this.map[x][y] = 2
 
-        var { x, y } = this._randomSlot();
-        this.map[x][y] = 2;
+        var { x, y } = this._randomSlot()
+        this.map[x][y] = 2
 
         this.state.score = 0
       }
     }
 
     this.timing()
-
   }
 
   _move: any = -1
@@ -288,7 +296,8 @@ export class Game2048 {
 
     const _nextNoneZero = (i: number, j: number, d: Direction) => {
       let [nextI, nextJ] = this.directions[d](i, j)
-      if (!_inRange(nextI, nextJ)) return null
+      if (!_inRange(nextI, nextJ))
+        return null
 
       while (_inRange(nextI, nextJ)) {
         const value = this.map[nextI][nextJ]
@@ -299,11 +308,12 @@ export class Game2048 {
         [nextI, nextJ] = this.directions[d](nextI, nextJ)
       }
 
-      return null;
+      return null
     }
 
     const _cal = (direction: Direction, i: number, j: number) => {
-      if (!_inRange(i, j)) return
+      if (!_inRange(i, j))
+        return
 
       const next = _nextNoneZero(i, j, direction)
       if (next) {
@@ -315,15 +325,16 @@ export class Game2048 {
 
           tracks.push({
             to: [j, i],
-            from: [nextJ, nextI]
+            from: [nextJ, nextI],
           })
-        } else if (this.map[i][j] === nextValue) {
-          this.map[i][j] *= 2;
-          this.map[nextI][nextJ] = 0;
+        }
+        else if (this.map[i][j] === nextValue) {
+          this.map[i][j] *= 2
+          this.map[nextI][nextJ] = 0
 
           tracks.push({
             to: [j, i],
-            from: [nextJ, nextI]
+            from: [nextJ, nextI],
           })
 
           this.state.score += this.map[i][j]
@@ -338,32 +349,37 @@ export class Game2048 {
       for (let j = 0; j < cols; ++j) {
         _cal(direction, 0, j)
       }
-    } else if (direction === 'down') {
+    }
+    else if (direction === 'down') {
       for (let j = 0; j < cols; ++j) {
         _cal(direction, rows - 1, j)
       }
-    } else if (direction === 'left') {
+    }
+    else if (direction === 'left') {
       for (let i = 0; i < rows; ++i) {
         _cal(direction, i, 0)
       }
-    } else if (direction === 'right') {
+    }
+    else if (direction === 'right') {
       for (let i = 0; i < rows; ++i) {
         _cal(direction, i, cols - 1)
       }
     }
 
     // 如果没有 tracks 就代表着没有方块移动 不生成方块
-    if (!tracks.length) return null
+    if (!tracks.length)
+      return null
 
     // 随机一个地方生成
     let obj = this._randomSlot()
     let amo = 0
 
     while (this.map[obj.x][obj.y] !== 0) {
-      if (amo >= rows * cols) return null
+      if (amo >= rows * cols)
+        return null
 
       obj = this._randomSlot()
-      amo += 1;
+      amo += 1
     }
 
     // 30%的概率生成 4
@@ -372,8 +388,8 @@ export class Game2048 {
     if (this.gameSettings.mode === 'rank') {
       // 分数达到 10000 分，加大难度
       if (this.state.score >= 15000) {
-        this.map[obj.x][obj.y] =
-          Math.random() <= 0.95 ? 4 : 2
+        this.map[obj.x][obj.y]
+          = Math.random() <= 0.95 ? 4 : 2
 
         if (new Date().getTime() - this._move >= 1000 * 15) {
           if (Math.random() <= 0.005 || Math.random() >= 0.095) {
@@ -384,18 +400,18 @@ export class Game2048 {
             this.exchange(random, Math.random() >= 0.5)
           }
         }
-
-      } else if (this.state.score >= 10000) {
-        this.map[obj.x][obj.y] =
-          Math.random() <= 0.75 ? 4 : 2
-
-      } else if (this.state.score >= 5000) {
-        this.map[obj.x][obj.y] =
-          Math.random() <= 0.5 ? 4 : 2
-
-      } else {
-        this.map[obj.x][obj.y] =
-          Math.random() <= 0.25 ? 4 : 2
+      }
+      else if (this.state.score >= 10000) {
+        this.map[obj.x][obj.y]
+          = Math.random() <= 0.75 ? 4 : 2
+      }
+      else if (this.state.score >= 5000) {
+        this.map[obj.x][obj.y]
+          = Math.random() <= 0.5 ? 4 : 2
+      }
+      else {
+        this.map[obj.x][obj.y]
+          = Math.random() <= 0.25 ? 4 : 2
       }
     }
 
@@ -425,10 +441,11 @@ export class Game2048 {
         // for 每一项添加运动轨迹
         tracks.push({
           to: [cols - index - 1, i],
-          from: [index, i]
+          from: [index, i],
         })
       }
-    } else {
+    }
+    else {
       for (let j = 0; j < cols; ++j) {
         const temp = this.map[index][j]
         this.map[index][j] = this.map[rows - index - 1][j]
@@ -437,7 +454,7 @@ export class Game2048 {
         // for 每一项添加运动轨迹
         tracks.push({
           to: [j, rows - index - 1],
-          from: [j, index]
+          from: [j, index],
         })
       }
     }
@@ -454,8 +471,9 @@ export class Game2048 {
 
     if (this.gameSettings.vibrate.slide) {
       window.navigator.vibrate([
-        30, 100
-      ]);
+        30,
+        100,
+      ])
     }
   }
 
@@ -465,55 +483,65 @@ export class Game2048 {
       audio.play()
     }
 
-    if (this.gameSettings.vibrate.failed)
+    if (this.gameSettings.vibrate.failed) {
       window.navigator.vibrate([
-        100, 30, 100, 30, 100, 200, 200
-      ]);
+        100,
+        30,
+        100,
+        30,
+        100,
+        200,
+        200,
+      ])
+    }
 
     this.refreshRankings()
   }
 
   listenTouch(callback: Function) {
     // 判断滑动手势
-    var startx: number, starty: number;
-    //获得角度
+    let startx: number, starty: number
+    // 获得角度
     function getAngle(angx: number, angy: number) {
-      return Math.atan2(angy, angx) * 180 / Math.PI;
+      return Math.atan2(angy, angx) * 180 / Math.PI
     };
 
-    //根据起点终点返回方向 1向上 2向下 3向左 4向右 0未滑动
+    // 根据起点终点返回方向 1向上 2向下 3向左 4向右 0未滑动
     function getDirection(startx: number, starty: number, endx: number, endy: number) {
-      var angx = endx - startx;
-      var angy = endy - starty;
-      var result = 0;
+      let angx = endx - startx
+      let angy = endy - starty
+      let result = 0
 
-      //如果滑动距离太短
+      // 如果滑动距离太短
       if (Math.abs(angx) < 2 && Math.abs(angy) < 2) {
-        return result;
+        return result
       }
 
-      var angle = getAngle(angx, angy);
+      let angle = getAngle(angx, angy)
       if (angle >= -135 && angle <= -45) {
-        result = 1;
-      } else if (angle > 45 && angle < 135) {
-        result = 2;
-      } else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
-        result = 3;
-      } else if (angle >= -45 && angle <= 45) {
-        result = 4;
+        result = 1
+      }
+      else if (angle > 45 && angle < 135) {
+        result = 2
+      }
+      else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
+        result = 3
+      }
+      else if (angle >= -45 && angle <= 45) {
+        result = 4
       }
 
-      return result;
+      return result
     }
 
-    //手指接触屏幕
-    document.addEventListener("touchstart", function (e) {
-      if (window._ignore) return
+    // 手指接触屏幕
+    document.addEventListener('touchstart', (e) => {
+      if (window._ignore)
+        return
 
-      startx = e.touches[0].pageX;
-      starty = e.touches[0].pageY;
-
-    }, false);
+      startx = e.touches[0].pageX
+      starty = e.touches[0].pageY
+    }, false)
 
     // document.body.addEventListener('touchmove', function (e) {
 
@@ -521,45 +549,46 @@ export class Game2048 {
 
     // }, { passive: false })
 
-    //手指离开屏幕
-    document.addEventListener("touchend", (e) => {
-      if (window._ignore) return
-      if (this.state.status !== 'start') return
+    // 手指离开屏幕
+    document.addEventListener('touchend', (e) => {
+      if (window._ignore)
+        return
+      if (this.state.status !== 'start')
+        return
 
-      var endx, endy;
-      endx = e.changedTouches[0].pageX;
-      endy = e.changedTouches[0].pageY;
-      var direction = getDirection(startx, starty, endx, endy);
+      let endx, endy
+      endx = e.changedTouches[0].pageX
+      endy = e.changedTouches[0].pageY
+      let direction = getDirection(startx, starty, endx, endy)
 
       let res
 
       switch (direction) {
         case 0:
-          e.preventDefault();
+          e.preventDefault()
           // alert("未滑动！");
-          break;
+          break
         case 1:
           res = this.move('up')
-          break;
+          break
         case 2:
           res = this.move('down')
-          break;
+          break
         case 3:
           res = this.move('left')
-          break;
+          break
         case 4:
           res = this.move('right')
-          break;
+          break
         default:
       }
 
       const over = this.isGameOver(this.map)
       if (over)
-        this.state.status = "end"
+        this.state.status = 'end'
 
       callback(res)
-
-    }, false);
+    }, false)
   }
 
   listen(_callback: (res: Track[] | null) => void) {
@@ -578,27 +607,28 @@ export class Game2048 {
 
   listenKeyboard(callback: Function) {
     document.addEventListener('keydown', (e) => {
-      if (this.state.status !== 'start') return
+      if (this.state.status !== 'start')
+        return
 
       let res
       switch (e.key) {
         case 'ArrowUp':
           res = this.move('up')
-          break;
+          break
         case 'ArrowDown':
           res = this.move('down')
-          break;
+          break
         case 'ArrowLeft':
           res = this.move('left')
-          break;
+          break
         case 'ArrowRight':
           res = this.move('right')
-          break;
+          break
       }
 
       const over = this.isGameOver(this.map)
       if (over) {
-        this.state.status = "end"
+        this.state.status = 'end'
       }
 
       callback(res)
@@ -606,11 +636,13 @@ export class Game2048 {
   }
 
   timing() {
-    if (this.state.status !== 'start') return
+    if (this.state.status !== 'start')
+      return
 
     this.gameSettings.time.sec += 1
 
-    if (this.gameSettings.mode === 'speed') this.speedMode()
+    if (this.gameSettings.mode === 'speed')
+      this.speedMode()
 
     setTimeout(() => {
       this.timing()
@@ -622,17 +654,20 @@ export class Game2048 {
   speedMode() {
     function calculateY(x: number) {
       if (x < 10) {
-        return 5;
-      } else if (x >= 10 && x <= 50) {
-        return 5 - (x - 10) * 0.1;
-      } else if (x >= 100 && x <= 150) {
-        return 3 - (x - 100) * 0.04;
-      } else {
+        return 5
+      }
+      else if (x >= 10 && x <= 50) {
+        return 5 - (x - 10) * 0.1
+      }
+      else if (x >= 100 && x <= 150) {
+        return 3 - (x - 100) * 0.04
+      }
+      else {
         // 对于超出以上范围的情况
         // 计算y值的递减量
-        let decrement = (x - 150) * 0.0066667;
+        let decrement = (x - 150) * 0.0066667
         // y最小为0.5
-        return Math.max(0.1, 1 - decrement);
+        return Math.max(0.1, 1 - decrement)
       }
     }
 
@@ -646,11 +681,14 @@ export class Game2048 {
     if (audio) {
       if (this.gameSettings.step >= 50) {
         audio.playbackRate = 1.5
-      } else if (this.gameSettings.step >= 100) {
+      }
+      else if (this.gameSettings.step >= 100) {
         audio.playbackRate = 2
-      } else if (this.gameSettings.step >= 150) {
+      }
+      else if (this.gameSettings.step >= 150) {
         audio.playbackRate = 3
-      } else if (this.gameSettings.step >= 200) {
+      }
+      else if (this.gameSettings.step >= 200) {
         audio.playbackRate = 5
       }
     }
@@ -665,7 +703,6 @@ export class Game2048 {
 
     while (this.map[obj.x][obj.y] !== 0) {
       if (amo >= rows * cols) {
-
         // 遍历图 如果有是0的点那么继续random
         for (let i = 0; i < rows; i++) {
           for (let j = 0; j < cols; j++) {
@@ -679,12 +716,12 @@ export class Game2048 {
           }
         }
 
-        this.state.status = "end"
+        this.state.status = 'end'
         return null
       }
 
       obj = this._randomSlot()
-      amo += 1;
+      amo += 1
     }
 
     // 30%的概率生成4
@@ -693,7 +730,7 @@ export class Game2048 {
 }
 
 // const baseUrl = 'https://124.223.71.129:9981'
-const baseUrl = 'https://gameends.tagzxia.com:9981'
+const baseUrl = 'https://game.tagzxia.com'
 
 let timer: any
 
@@ -704,10 +741,10 @@ export function postScoreNew(user: string, score: number) {
     fetch(`${baseUrl}/games/2048/score_new/${user}/${score}`, {
     })
       .then(res => res.json())
-      .then(data => {
-        console.log("score", data)
+      .then((data) => {
+        console.log('score', data)
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err)
       })
   }, 200)
@@ -720,10 +757,10 @@ export function postScore(user: string, score: number) {
     fetch(`${baseUrl}/games/2048/score/${user}/${score}`, {
     })
       .then(res => res.json())
-      .then(data => {
-        console.log("score", data)
+      .then((data) => {
+        console.log('score', data)
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err)
       })
   }, 200)
@@ -733,10 +770,10 @@ export function getUserStatus(user: string, cb: Function) {
   // 向 baseUrl/status 发送 get
   fetch(`${baseUrl}/games/2048/score/${user}`)
     .then(res => res.json())
-    .then(data => {
+    .then((data) => {
       cb(data)
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err)
     })
 }
@@ -744,10 +781,10 @@ export function getUserStatus(user: string, cb: Function) {
 export function updateOnlineStatus(user: string) {
   fetch(`${baseUrl}/online/${user}`)
     .then(res => res.json())
-    .then(data => {
+    .then((data) => {
       console.log('refresh online', data)
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err)
     })
 }
@@ -755,10 +792,10 @@ export function updateOnlineStatus(user: string) {
 export function getOnline(cb: Function) {
   fetch(`${baseUrl}/online`)
     .then(res => res.json())
-    .then(data => {
+    .then((data) => {
       cb(data)
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err)
     })
 }
@@ -767,10 +804,10 @@ export function getRankings(cb: Function) {
   // 向 baseUrl/rank 发送 get
   fetch(`${baseUrl}/games/2048/rank`)
     .then(res => res.json())
-    .then(data => {
+    .then((data) => {
       cb(data)
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err)
     })
 }
